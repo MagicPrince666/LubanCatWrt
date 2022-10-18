@@ -14,7 +14,7 @@
  	help
 --- a/drivers/net/phy/Makefile
 +++ b/drivers/net/phy/Makefile
-@@ -72,6 +72,8 @@ obj-$(CONFIG_DP83TC811_PHY)	+= dp83tc811
+@@ -74,6 +74,8 @@ obj-$(CONFIG_DP83TC811_PHY)	+= dp83tc811
  obj-$(CONFIG_FIXED_PHY)		+= fixed_phy.o
  obj-$(CONFIG_ICPLUS_PHY)	+= icplus.o
  obj-$(CONFIG_INTEL_XWAY_PHY)	+= intel-xway.o
