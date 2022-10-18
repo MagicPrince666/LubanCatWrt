@@ -291,7 +291,7 @@ mac80211_hostapd_setup_base() {
 	}
 	[ "$hwmode" = "a" ] || enable_ac=0
 
-	if [ "$enable_ac" != "0" ]; then
+	if [ "$enable_ac" != "0" -o "$vendor_vht" = "1" ]; then
 		json_get_vars \
 			rxldpc:1 \
 			short_gi_80:1 \
@@ -427,6 +427,7 @@ mac80211_hostapd_setup_base() {
 		he_mac_cap=${he_mac_cap:2}
 
 		append base_cfg "ieee80211ax=1" "$N"
+		[ -n "$he_bss_color" ] && append base_cfg "he_bss_color=$he_bss_color" "$N"
 		[ "$hwmode" = "a" ] && {
 			append base_cfg "he_oper_chwidth=$vht_oper_chwidth" "$N"
 			append base_cfg "he_oper_centr_freq_seg0_idx=$vht_center_seg0" "$N"
@@ -629,7 +630,8 @@ mac80211_iw_interface_add() {
 	}
 
 	[ "$rc" = 233 ] && {
-		iw dev "$ifname" del >/dev/null 2>&1
+		#iw dev "$ifname" del >/dev/null 2>&1
+    	ip link set dev "$ifname" down 2>/dev/null
 		[ "$?" = 0 ] && {
 			sleep 1
 
@@ -754,12 +756,13 @@ mac80211_setup_supplicant() {
 	[ "$enable" = 0 ] && {
 		ubus call wpa_supplicant.${phy} config_remove "{\"iface\":\"$ifname\"}"
 		ip link set dev "$ifname" down
-		iw dev "$ifname" del
+		#iw dev "$ifname" del
 		return 0
 	}
 
 	wpa_supplicant_prepare_interface "$ifname" nl80211 || {
-		iw dev "$ifname" del
+		#iw dev "$ifname" del
+    	ip link set dev "$ifname" down
 		return 1
 	}
 	if [ "$mode" = "sta" ]; then
@@ -791,7 +794,8 @@ mac80211_setup_supplicant_noctl() {
 	local enable=$1
 	local spobj="$(ubus -S list | grep wpa_supplicant.${ifname})"
 	wpa_supplicant_prepare_interface "$ifname" nl80211 || {
-		iw dev "$ifname" del
+		#iw dev "$ifname" del
+    	ip link set dev "$ifname" down
 		return 1
 	}
 
@@ -1011,7 +1015,7 @@ mac80211_vap_cleanup() {
 	for wdev in $vaps; do
 		[ "$service" != "none" ] && ubus call ${service} config_remove "{\"iface\":\"$wdev\"}"
 		ip link set dev "$wdev" down 2>/dev/null
-		iw dev "$wdev" del
+		#iw dev "$wdev" del
 	done
 }
 
@@ -1072,7 +1076,7 @@ drv_mac80211_setup() {
 		done
 		if [ "$found" = "0" ]; then
 			ip link set dev "$wdev" down
-			iw dev "$wdev" del
+			#iw dev "$wdev" del
 		fi
 	done
 
