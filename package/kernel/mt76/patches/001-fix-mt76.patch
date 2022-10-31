@@ -1,0 +1,31 @@
+--- a/Makefile
++++ b/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-EXTRA_CFLAGS += -Werror -DCONFIG_MT76_LEDS
++EXTRA_CFLAGS += -DCONFIG_MT76_LEDS
+ obj-m := mt76.o
+ obj-$(CONFIG_MT76_USB) += mt76-usb.o
+ obj-$(CONFIG_MT76_SDIO) += mt76-sdio.o
+--- a/mt7921/pci_mac.c
++++ b/mt7921/pci_mac.c
+@@ -261,7 +261,7 @@ int mt7921e_mac_reset(struct mt7921_dev
+ 
+ 	err = mt7921e_driver_own(dev);
+ 	if (err)
+-		return err;
++		goto out;
+ 
+ 	err = mt7921_run_firmware(dev);
+ 	if (err)
+--- a/usb.c
++++ b/usb.c
+@@ -1067,7 +1067,7 @@ int __mt76u_init(struct mt76_dev *dev, s
+ 
+ 	INIT_WORK(&usb->stat_work, mt76u_tx_status_data);
+ 
+-	usb->data_len = usb_maxpacket(udev, usb_sndctrlpipe(udev, 0), 1);
++	usb->data_len = usb_maxpacket(udev, usb_sndctrlpipe(udev, 0));
+ 	if (usb->data_len < 32)
+ 		usb->data_len = 32;
+ 

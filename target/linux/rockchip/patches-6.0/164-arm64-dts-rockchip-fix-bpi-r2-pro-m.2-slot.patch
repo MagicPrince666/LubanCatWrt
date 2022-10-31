@@ -1,0 +1,31 @@
+From fc422ce2e13ee3c73e7d3eebab9daefaef38c4bc Mon Sep 17 00:00:00 2001
+From: Marty Jones <mj8263788@gmail.com>
+Date: Tue, 23 Aug 2022 19:41:54 -0400
+Subject: [PATCH] arm64: dts: rockchip: fix bpi r2 pro m.2 slot
+
+Signed-off-by: Marty Jones <mj8263788@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts
+@@ -124,6 +124,7 @@
+ 		regulator-name = "vcc3v3_minipcie";
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
+ 		enable-active-high;
+ 		gpio = <&gpio0 RK_PC6 GPIO_ACTIVE_HIGH>;
+ 		startup-delay-us = <50000>;
+@@ -136,8 +137,9 @@
+ 		regulator-name = "vcc3v3_ngff";
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
+ 		enable-active-high;
+-		gpio = <&gpio4 RK_PC1 GPIO_ACTIVE_HIGH>;
++		gpio = <&gpio0 RK_PB7 GPIO_ACTIVE_HIGH>;
+ 		startup-delay-us = <50000>;
+ 		vin-supply = <&vcc3v3_pi6c_05>;
+ 	};
