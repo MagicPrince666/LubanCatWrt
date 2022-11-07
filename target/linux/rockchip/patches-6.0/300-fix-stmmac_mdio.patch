@@ -1,8 +1,8 @@
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-@@ -498,6 +498,11 @@ int stmmac_mdio_register(struct net_devi
- 	if (priv->plat->has_xgmac)
- 		stmmac_xgmac2_mdio_read(new_bus, 0, MII_ADDR_C45);
+@@ -504,6 +504,11 @@ int stmmac_mdio_register(struct net_devi
+ 		}
+ 	}
  
 +		stmmac_mdio_write(new_bus,0,31,2627);
 +		stmmac_mdio_write(new_bus,0,25,0x1801);
@@ -14,7 +14,7 @@
  
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2953,6 +2953,8 @@ static int stmmac_init_dma_engine(struct
+@@ -2901,6 +2901,8 @@ static int stmmac_init_dma_engine(struct
  	if (priv->extend_desc && (priv->mode == STMMAC_RING_MODE))
  		atds = 1;
  
