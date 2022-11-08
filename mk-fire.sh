@@ -134,9 +134,9 @@ then
 
     mkdir -p ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}
 
-    cp ${DEVICE_DIR}openwrt-rockchip-armv8-${device_name}-ext4-sysupgrade.img.gz ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}/openwrt-${device_name}-ext4-${namedate}.img.gz
-    cp ${DEVICE_DIR}openwrt-rockchip-armv8-${device_name}-squashfs-sysupgrade.img.gz ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}/openwrt-${device_name}-squashfs-${namedate}.img.gz
-    cp ${DEVICE_DIR}openwrt-rockchip-armv8-${device_name}.manifest ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}/openwrt-${device_name}.manifest
+    cp ${DEVICE_DIR}openwrt-rockchip-armv8-*${device_name}-ext4-sysupgrade.img.gz ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}/openwrt-${device_name}-ext4-${namedate}.img.gz
+    cp ${DEVICE_DIR}openwrt-rockchip-armv8-*${device_name}-squashfs-sysupgrade.img.gz ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}/openwrt-${device_name}-squashfs-${namedate}.img.gz
+    cp ${DEVICE_DIR}openwrt-rockchip-armv8-*${device_name}.manifest ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}/openwrt-${device_name}.manifest
 
     rm -f ${DEVICE_DIR}${OUTPUT_DIR}${dirdate}/sha256sum
     cd ${DEVICE_DIR}${OUTPUT_DIR}
