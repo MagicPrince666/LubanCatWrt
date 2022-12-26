@@ -1,0 +1,48 @@
+--- a/smb1pdu.c
++++ b/smb1pdu.c
+@@ -5961,7 +5961,7 @@ static int find_first(struct ksmbd_work
+ 	list_add(&dir_fp->node, &dir_fp->f_ci->m_fp_list);
+ 	write_unlock(&dir_fp->f_ci->m_lock);
+ 
+-	set_ctx_actor(&dir_fp->readdir_data.ctx, ksmbd_fill_dirent);
++
+ 	dir_fp->readdir_data.dirent = (void *)__get_free_page(GFP_KERNEL);
+ 	if (!dir_fp->readdir_data.dirent) {
+ 		rc = -ENOMEM;
+@@ -6223,7 +6223,7 @@ static int find_next(struct ksmbd_work *
+ 		goto err_out;
+ 	}
+ 
+-	set_ctx_actor(&dir_fp->readdir_data.ctx, ksmbd_fill_dirent);
++
+ 	pathname = kmalloc(PATH_MAX, GFP_KERNEL);
+ 	if (!pathname) {
+ 		rc = -ENOMEM;
+--- a/smb2pdu.c
++++ b/smb2pdu.c
+@@ -4039,7 +4039,6 @@ int smb2_query_dir(struct ksmbd_work *wo
+ 	query_dir_private.d_info		= &d_info;
+ 	query_dir_private.info_level		= req->FileInformationClass;
+ 	dir_fp->readdir_data.private		= &query_dir_private;
+-	set_ctx_actor(&dir_fp->readdir_data.ctx, __query_dir);
+ 
+ 	rc = iterate_dir(dir_fp->filp, &dir_fp->readdir_data.ctx);
+ 	/*
+--- a/vfs.c
++++ b/vfs.c
+@@ -2003,7 +2003,6 @@ int ksmbd_vfs_empty_dir(struct ksmbd_fil
+ 
+ 	memset(&readdir_data, 0, sizeof(struct ksmbd_readdir_data));
+ 
+-	set_ctx_actor(&readdir_data.ctx, __dir_empty);
+ 	readdir_data.dirent_count = 0;
+ 
+ 	err = iterate_dir(fp->filp, &readdir_data.ctx);
+@@ -2074,7 +2073,6 @@ static int ksmbd_vfs_lookup_in_dir(const
+ 	struct file *dfilp;
+ 	int flags = O_RDONLY | O_LARGEFILE;
+ 	struct ksmbd_readdir_data readdir_data = {
+-		.ctx.actor	= __caseless_lookup,
+ 		.private	= name,
+ 		.used		= namelen,
+ 		.dirent_count	= 0,

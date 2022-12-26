@@ -52,7 +52,7 @@ define KernelPackage/hwmon-adt7410
 	$(LINUX_DIR)/drivers/hwmon/adt7x10.ko \
 	$(LINUX_DIR)/drivers/hwmon/adt7410.ko
   AUTOLOAD:=$(call AutoLoad,60,adt7x10 adt7410)
-  $(call AddDepends/hwmon,+kmod-i2c-core)
+  $(call AddDepends/hwmon,+kmod-i2c-core +LINUX_6_1:kmod-regmap-core)
 endef
 
 define KernelPackage/hwmon-adt7410/description
@@ -472,6 +472,21 @@ define KernelPackage/hwmon-sht21/description
 endef
 
 $(eval $(call KernelPackage,hwmon-sht21))
+
+
+define KernelPackage/hwmon-sht3x
+  TITLE:=Sensiron SHT3x and compat. monitoring support
+  KCONFIG:=CONFIG_SENSORS_SHT3x
+  FILES:=$(LINUX_DIR)/drivers/hwmon/sht3x.ko
+  AUTOLOAD:=$(call AutoProbe,sht3x)
+  $(call AddDepends/hwmon,+kmod-i2c-core +kmod-lib-crc8)
+endef
+
+define KernelPackage/hwmon-sht3x/description
+ Kernel module for Sensirion SHT3x temperature and humidity sensors chip
+endef
+
+$(eval $(call KernelPackage,hwmon-sht3x))
 
 
 define KernelPackage/hwmon-tmp102
