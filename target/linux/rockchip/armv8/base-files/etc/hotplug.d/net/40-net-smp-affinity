@@ -29,6 +29,10 @@ set_interface_core() {
 }
 
 case "$(board_name)" in
+embedfire,lubancat1|\
+embedfire,lubancat-zero-n)
+	set_interface_core 2 "eth0"
+	;;
 embedfire,doornet1|\
 friendlyarm,nanopi-r2s)
 	set_interface_core 2 "eth0"

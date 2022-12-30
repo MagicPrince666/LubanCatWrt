@@ -42,6 +42,8 @@ rockchip_setup_macs()
 	case "$board" in
 	embedfire,doornet1|\
 	embedfire,doornet2|\
+	embedfire,lubancat1|\
+	embedfire,lubancat-zero-n|\
 	embedfire,lubancat1n|\
 	embedfire,lubancat2|\
 	embedfire,lubancat2n|\
