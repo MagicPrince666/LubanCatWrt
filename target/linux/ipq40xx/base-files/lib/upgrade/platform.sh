@@ -111,6 +111,7 @@ platform_do_upgrade() {
 	edgecore,ecw5211 |\
 	edgecore,oap100 |\
 	engenius,eap2200 |\
+	glinet,gl-a1300 |\
 	glinet,gl-ap1300 |\
 	luma,wrtq-329acn |\
 	mobipromo,cm520-79f |\
@@ -163,7 +164,7 @@ platform_do_upgrade() {
 	linksys,ea6350v3 |\
 	linksys,ea8300 |\
 	linksys,mr8300 |\
-	linksys,whw01-v1)
+	linksys,whw01)
 		platform_do_upgrade_linksys "$1"
 		;;
 	meraki,mr33 |\
@@ -176,7 +177,9 @@ platform_do_upgrade() {
 	mikrotik,hap-ac3-lte6-kit|\
 	mikrotik,lhgg-60ad|\
 	mikrotik,sxtsq-5-ac|\
-	mikrotik,wap-ac)
+	mikrotik,wap-ac|\
+	mikrotik,wap-ac-lte|\
+	mikrotik,wap-r-ac)
 		[ "$(rootfs_type)" = "tmpfs" ] && mtd erase firmware
 		default_do_upgrade "$1"
 		;;

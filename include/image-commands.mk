@@ -53,6 +53,7 @@ define Build/append-image-stage
 	cp "$(BIN_DIR)/$(DEVICE_IMG_PREFIX)-$(1)" "$@.stripmeta"
 	fwtool -s /dev/null -t "$@.stripmeta" || :
 	fwtool -i /dev/null -t "$@.stripmeta" || :
+	mkdir -p "$(STAGING_DIR_IMAGE)"
 	dd if="$@.stripmeta" of="$(STAGING_DIR_IMAGE)/$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))-$(DEVICE_NAME)-$(1)"
 	dd if="$@.stripmeta" >> "$@"
 	rm "$@.stripmeta"
@@ -296,6 +297,7 @@ define Build/fit
 		-a $(KERNEL_LOADADDR) -e $(if $(KERNEL_ENTRY),$(KERNEL_ENTRY),$(KERNEL_LOADADDR)) \
 		$(if $(DEVICE_FDT_NUM),-n $(DEVICE_FDT_NUM)) \
 		$(if $(DEVICE_DTS_DELIMITER),-l $(DEVICE_DTS_DELIMITER)) \
+		$(if $(DEVICE_DTS_LOADADDR),-s $(DEVICE_DTS_LOADADDR)) \
 		$(if $(DEVICE_DTS_OVERLAY),$(foreach dtso,$(DEVICE_DTS_OVERLAY), -O $(dtso):$(KERNEL_BUILD_DIR)/image-$(dtso).dtb)) \
 		-c $(if $(DEVICE_DTS_CONFIG),$(DEVICE_DTS_CONFIG),"config-1") \
 		-A $(LINUX_KARCH) -v $(LINUX_VERSION)
@@ -304,8 +306,13 @@ define Build/fit
 	@mv $@.new $@
 endef
 
+define Build/libdeflate-gzip
+	$(STAGING_DIR_HOST)/bin/libdeflate-gzip -f -12 -c $@ $(1) > $@.new
+	@mv $@.new $@
+endef
+
 define Build/gzip
-	gzip -f -9n -c $@ $(1) > $@.new
+	$(STAGING_DIR_HOST)/bin/gzip -f -9n -c $@ $(1) > $@.new
 	@mv $@.new $@
 endef
 

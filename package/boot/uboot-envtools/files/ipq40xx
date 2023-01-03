@@ -34,6 +34,7 @@ case "$board" in
 alfa-network,ap120c-ac|\
 devolo,magic-2-wifi-next|\
 edgecore,ecw5211|\
+glinet,gl-a1300 |\
 glinet,gl-ap1300|\
 glinet,gl-b1300|\
 glinet,gl-b2200|\
@@ -62,7 +63,7 @@ linksys,ea8300|\
 linksys,mr8300)
 	ubootenv_add_uci_config "/dev/mtd7" "0x0" "0x40000" "0x20000"
 	;;
-linksys,whw01-v1)
+linksys,whw01)
 	ubootenv_add_uci_config "/dev/mtd6" "0x0" "0x40000" "0x10000"
 	;;
 zyxel,nbg6617)

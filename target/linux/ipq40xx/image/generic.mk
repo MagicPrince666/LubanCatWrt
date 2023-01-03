@@ -4,28 +4,28 @@ DEVICE_VARS += RAS_BOARD RAS_ROOTFS_SIZE RAS_VERSION
 DEVICE_VARS += WRGG_DEVNAME WRGG_SIGNATURE
 
 define Device/FitImage
-	KERNEL_SUFFIX := -fit-uImage.itb
+	KERNEL_SUFFIX := -uImage.itb
 	KERNEL = kernel-bin | gzip | fit gzip $$(KDIR)/image-$$(DEVICE_DTS).dtb
 	KERNEL_NAME := Image
 endef
 
 define Device/FitImageLzma
-	KERNEL_SUFFIX := -fit-uImage.itb
+	KERNEL_SUFFIX := -uImage.itb
 	KERNEL = kernel-bin | lzma | fit lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb
 	KERNEL_NAME := Image
 endef
 
 define Device/FitzImage
-	KERNEL_SUFFIX := -fit-zImage.itb
+	KERNEL_SUFFIX := -zImage.itb
 	KERNEL = kernel-bin | fit none $$(KDIR)/image-$$(DEVICE_DTS).dtb
 	KERNEL_NAME := zImage
 endef
 
 define Device/UbiFit
 	KERNEL_IN_UBI := 1
-	IMAGES := nand-factory.ubi nand-sysupgrade.bin
-	IMAGE/nand-factory.ubi := append-ubi
-	IMAGE/nand-sysupgrade.bin := sysupgrade-tar | append-metadata
+	IMAGES := factory.ubi sysupgrade.bin
+	IMAGE/factory.ubi := append-ubi
+	IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
 
 define Device/DniImage
@@ -160,8 +160,8 @@ define Device/alfa-network_ap120c-ac
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	IMAGE_SIZE := 65536k
-	IMAGES := nand-factory.bin nand-sysupgrade.bin
-	IMAGE/nand-factory.bin := append-ubi | qsdk-ipq-factory-nand
+	IMAGES := factory.bin sysupgrade.bin
+	IMAGE/factory.bin := append-ubi | qsdk-ipq-factory-nand
 endef
 TARGET_DEVICES += alfa-network_ap120c-ac
 
@@ -181,8 +181,7 @@ define Device/aruba_ap-303h
 	$(call Device/aruba_glenmorangie)
 	DEVICE_MODEL := AP-303H
 endef
-# Missing DSA Setup
-#TARGET_DEVICES += aruba_ap-303h
+TARGET_DEVICES += aruba_ap-303h
 
 define Device/aruba_ap-365
 	$(call Device/aruba_glenmorangie)
@@ -312,14 +311,14 @@ endef
 #TARGET_DEVICES += buffalo_wtr-m2133hp
 
 define Device/cellc_rtl30vw
-	KERNEL_SUFFIX := -fit-zImage.itb
+	KERNEL_SUFFIX := -zImage.itb
 	KERNEL_INITRAMFS = kernel-bin | gzip | fit gzip $$(KDIR)/image-$$(DEVICE_DTS).dtb
 	KERNEL = kernel-bin | fit none $$(KDIR)/image-$$(DEVICE_DTS).dtb | uImage lzma | pad-to 2048
 	KERNEL_NAME := zImage
 	KERNEL_IN_UBI :=
-	IMAGES := nand-factory.bin nand-sysupgrade.bin
-	IMAGE/nand-factory.bin := append-rootfshdr kernel | append-ubi | qsdk-ipq-factory-nand-askey kernel
-	IMAGE/nand-sysupgrade.bin := append-rootfshdr kernel | sysupgrade-tar kernel=$$$$@.kernel | append-metadata
+	IMAGES := factory.bin sysupgrade.bin
+	IMAGE/factory.bin := append-rootfshdr kernel | append-ubi | qsdk-ipq-factory-nand-askey kernel
+	IMAGE/sysupgrade.bin := append-rootfshdr kernel | sysupgrade-tar kernel=$$$$@.kernel | append-metadata
 	DEVICE_VENDOR := Cell C
 	DEVICE_MODEL := RTL30VW
 	SOC := qcom-ipq4019
@@ -419,8 +418,7 @@ define Device/dlink_dap-2610
 	IMAGE/factory.bin    := append-kernel | pad-offset 6144k 160 | append-rootfs | wrgg-image | check-size
 	IMAGE/sysupgrade.bin := append-kernel | wrgg-image | pad-to $$$$(BLOCKSIZE) | append-rootfs | pad-rootfs | check-size | append-metadata
 endef
-# Missing DSA Setup
-#TARGET_DEVICES += dlink_dap-2610
+TARGET_DEVICES += dlink_dap-2610
 
 define Device/edgecore_ecw5211
 	$(call Device/FitImage)
@@ -443,7 +441,7 @@ define Device/edgecore_oap100
 	SOC := qcom-ipq4019
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
-	IMAGES := nand-sysupgrade.bin
+	IMAGES := sysupgrade.bin
 	DEVICE_DTS_CONFIG := config@ap.dk07.1-c1
 	DEVICE_PACKAGES := ipq-wifi-edgecore_oap100 kmod-usb-acm kmod-usb-net kmod-usb-net-cdc-qmi uqmi
 endef
@@ -565,6 +563,20 @@ endef
 # Missing DSA Setup
 #TARGET_DEVICES += ezviz_cs-w3-wd1200g-eup
 
+define Device/glinet_gl-a1300
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := GL.iNet
+	DEVICE_MODEL := GL-A1300
+	SOC := qcom-ipq4018
+	DEVICE_DTS_CONFIG := config@ap.dk01.1-c2
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	IMAGE_SIZE := 131072k
+	DEVICE_PACKAGE := ipq-wifi-glinet_gl-a1300
+endef
+TARGET_DEVICES += glinet_gl-a1300
+
 define Device/glinet_gl-ap1300
 	$(call Device/FitImage)
 	$(call Device/UbiFit)
@@ -625,96 +637,104 @@ endef
 # Missing DSA Setup
 #TARGET_DEVICES += glinet_gl-s1300
 
+define Device/kernel-size-6350-8300
+	DEVICE_COMPAT_VERSION := 2.0
+	DEVICE_COMPAT_MESSAGE := Kernel partition size must be increased for \
+	this OpenWrt version. Before continuing, you MUST issue either the \
+	command "fw_setenv kernsize 500000" from the OpenWrt command line, \
+	or "setenv kernsize 500000 ; saveenv" from the U-Boot serial console. \
+	Instead of the sysupgrade image, you must then install the OpenWrt \
+	factory image, setting the force flag and wiping the configuration. \
+	(e.g. "sysupgrade -n -F openwrt-squashfs-factory.bin" on command line)
+endef
+
 define Device/linksys_ea6350v3
 	# The Linksys EA6350v3 has a uboot bootloader that does not
 	# support either booting lzma kernel images nor booting UBI
 	# partitions. This uboot, however, supports raw kernel images and
 	# gzipped images.
 	#
-	# As for the time of writing this, the device will boot the kernel
-	# from a fixed address with a fixed length of 3MiB. Also, the
-	# device has a hard-coded kernel command line that requieres the
+	# As configured by the OEM factory, the device will boot the kernel
+	# from a fixed address with a fixed length of 3 MiB. Also, the
+	# device has a hard-coded kernel command line that requires the
 	# rootfs and alt_rootfs to be in mtd11 and mtd13 respectively.
 	# Oh... and the kernel partition overlaps with the rootfs
 	# partition (the same for alt_kernel and alt_rootfs).
 	#
 	# If you are planing re-partitioning the device, you may want to
-	# keep those details in mind:
-	# 1. The kernel adresses you should honor are 0x00000000 and
+	# keep these details in mind:
+	# 1. The kernel addresses you should honor are 0x00000000 and
 	#    0x02800000 respectively.
-	# 2. The kernel size (plus the dtb) cannot exceed 3.00MiB in size.
+	# 2. The kernel size (plus the dtb) cannot exceed 3 MiB in size
+	#    unless the uboot environment variable "kernsize" is increased.
 	# 3. You can use 'zImage', but not a raw 'Image' packed with lzma.
 	# 4. The kernel command line from uboot is harcoded to boot with
 	#    rootfs either in mtd11 or mtd13.
 	$(call Device/FitzImage)
+	$(call Device/kernel-size-6350-8300)
 	DEVICE_VENDOR := Linksys
 	DEVICE_MODEL := EA6350
 	DEVICE_VARIANT := v3
 	SOC := qcom-ipq4018
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
-	KERNEL_SIZE := 3072k
-	IMAGE_SIZE := 37888k
+	KERNEL_SIZE := 5120k
+	IMAGE_SIZE := 35840k
 	UBINIZE_OPTS := -E 5
 	IMAGES += factory.bin
 	IMAGE/factory.bin := append-kernel | append-uImage-fakehdr filesystem | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=EA6350v3
-	DEFAULT := n
 endef
 TARGET_DEVICES += linksys_ea6350v3
 
 define Device/linksys_ea8300
 	$(call Device/FitzImage)
+	$(call Device/kernel-size-6350-8300)
 	DEVICE_VENDOR := Linksys
 	DEVICE_MODEL := EA8300
 	SOC := qcom-ipq4019
-	KERNEL_SIZE := 3072k
-	IMAGE_SIZE := 87040k
+	KERNEL_SIZE := 5120k
+	IMAGE_SIZE := 84992k
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
 	IMAGES += factory.bin
 	IMAGE/factory.bin  := append-kernel | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=EA8300
 	DEVICE_PACKAGES := ath10k-firmware-qca9888-ct ipq-wifi-linksys_ea8300 kmod-usb-ledtrig-usbport
-	DEFAULT := n
 endef
 TARGET_DEVICES += linksys_ea8300
 
 define Device/linksys_mr8300
 	$(call Device/FitzImage)
+	$(call Device/kernel-size-6350-8300)
 	DEVICE_VENDOR := Linksys
 	DEVICE_MODEL := MR8300
 	SOC := qcom-ipq4019
-	KERNEL_SIZE := 3072k
-	IMAGE_SIZE := 87040k
+	KERNEL_SIZE := 5120k
+	IMAGE_SIZE := 84992k
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
 	IMAGES += factory.bin
 	IMAGE/factory.bin  := append-kernel | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=MR8300
 	DEVICE_PACKAGES := ath10k-firmware-qca9888-ct kmod-usb-ledtrig-usbport
-	DEFAULT := n
 endef
 TARGET_DEVICES += linksys_mr8300
 
-define Device/linksys_whw01-v1
+define Device/linksys_whw01
 	$(call Device/FitzImage)
 	DEVICE_VENDOR := Linksys
 	DEVICE_MODEL := WHW01
-	DEVICE_VARIANT := v1
 	KERNEL_SIZE := 6144k
-	IMAGE_SIZE := 28704512  # 28032k minus linksys signature (256-bytes).
+	IMAGE_SIZE := 75776K
 	SOC := qcom-ipq4018
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
 	IMAGES += factory.bin
-	IMAGE/factory.bin := append-kernel | pad-to $$$$(KERNEL_SIZE) | \
-		append-ubi | linksys-image type=WHW01 | pad-to $$$$(PAGESIZE) | \
-		check-size
+	IMAGE/factory.bin := append-kernel | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=WHW01
 	DEVICE_PACKAGES := uboot-envtools kmod-leds-pca963x
 endef
-# Missing DSA Setup
-#TARGET_DEVICES += linksys_whw01-v1
+TARGET_DEVICES += linksys_whw01
 
 define Device/luma_wrtq-329acn
 	$(call Device/FitImage)
@@ -856,8 +876,8 @@ define Device/netgear_wac510
 	DEVICE_DTS_CONFIG := config@5
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
-	IMAGES += nand-factory.tar
-	IMAGE/nand-factory.tar := append-ubi | wac5xx-netgear-tar
+	IMAGES += factory.tar
+	IMAGE/factory.tar := append-ubi | wac5xx-netgear-tar
 	DEVICE_PACKAGES := uboot-envtools
 endef
 TARGET_DEVICES += netgear_wac510
@@ -875,8 +895,7 @@ define Device/openmesh_a42
 	IMAGE/factory.bin := append-rootfs | pad-rootfs | openmesh-image ce_type=A42
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-rootfs | sysupgrade-tar rootfs=$$$$@ | append-metadata
 endef
-# Missing DSA Setup
-#TARGET_DEVICES += openmesh_a42
+TARGET_DEVICES += openmesh_a42
 
 define Device/openmesh_a62
 	$(call Device/FitImageLzma)
@@ -892,8 +911,7 @@ define Device/openmesh_a62
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-rootfs | sysupgrade-tar rootfs=$$$$@ | append-metadata
 	DEVICE_PACKAGES := ath10k-firmware-qca9888-ct
 endef
-# Missing DSA Setup
-#TARGET_DEVICES += openmesh_a62
+TARGET_DEVICES += openmesh_a62
 
 define Device/p2w_r619ac
 	$(call Device/FitzImage)
@@ -910,8 +928,8 @@ endef
 define Device/p2w_r619ac-64m
 	$(call Device/p2w_r619ac)
 	DEVICE_VARIANT := 64M NAND
-	IMAGES += nand-factory.bin
-	IMAGE/nand-factory.bin := append-ubi | qsdk-ipq-factory-nand
+	IMAGES += factory.bin
+	IMAGE/factory.bin := append-ubi | qsdk-ipq-factory-nand
 endef
 TARGET_DEVICES += p2w_r619ac-64m
 
@@ -947,8 +965,7 @@ define Device/plasmacloud_pa1200
 	IMAGE/factory.bin := append-rootfs | pad-rootfs | openmesh-image ce_type=PA1200
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-rootfs | sysupgrade-tar rootfs=$$$$@ | append-metadata
 endef
-# Missing DSA Setup
-#TARGET_DEVICES += plasmacloud_pa1200
+TARGET_DEVICES += plasmacloud_pa1200
 
 define Device/plasmacloud_pa2200
 	$(call Device/FitImageLzma)
@@ -964,8 +981,7 @@ define Device/plasmacloud_pa2200
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-rootfs | sysupgrade-tar rootfs=$$$$@ | append-metadata
 	DEVICE_PACKAGES := ath10k-firmware-qca9888-ct
 endef
-# Missing DSA Setup
-#TARGET_DEVICES += plasmacloud_pa2200
+TARGET_DEVICES += plasmacloud_pa2200
 
 define Device/qcom_ap-dk01.1-c1
 	DEVICE_VENDOR := Qualcomm Atheros
@@ -1055,7 +1071,7 @@ define Device/teltonika_rutx10
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	FILESYSTEMS := squashfs
-	IMAGE/nand-factory.ubi := append-ubi | qsdk-ipq-factory-nand | append-rutx-metadata
+	IMAGE/factory.ubi := append-ubi | qsdk-ipq-factory-nand | append-rutx-metadata
 	DEVICE_PACKAGES := ipq-wifi-teltonika_rutx kmod-bluetooth
 endef
 # Missing DSA Setup
