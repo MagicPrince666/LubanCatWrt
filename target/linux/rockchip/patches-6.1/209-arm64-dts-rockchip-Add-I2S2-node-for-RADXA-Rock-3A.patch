@@ -16,7 +16,7 @@ Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 
 --- a/arch/arm64/boot/dts/rockchip/rk3568-rock-3a.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3568-rock-3a.dts
-@@ -525,6 +525,11 @@
+@@ -527,6 +527,11 @@
  	status = "okay";
  };
  
