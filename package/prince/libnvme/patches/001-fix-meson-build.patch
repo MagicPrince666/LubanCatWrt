@@ -1,0 +1,12 @@
+Index: libnvme-master/src/nvme/fabrics.c
+===================================================================
+--- libnvme-master.orig/src/nvme/fabrics.c
++++ libnvme-master/src/nvme/fabrics.c
+@@ -38,6 +38,7 @@
+ 
+ #define NVMF_HOSTID_SIZE	37
+ #define UUID_SIZE		37  /* 1b4e28ba-2fa1-11d2-883f-0016d3cca427 + \0 */
++#define SCOPE_DELIMITER	'%'
+ 
+ const char *nvmf_dev = "/dev/nvme-fabrics";
+ const char *nvmf_hostnqn_file = "/etc/nvme/hostnqn";

@@ -1,0 +1,75 @@
+
+DUMMY=0
+
+debug()
+{
+	if [ 1 -eq $DUMMY ]
+	then	
+		echo -e "$@" > /dev/kmsg
+	fi
+}
+
+debug "action = $ACTION"
+debug "interface = $INTERFACE"
+debug "device = $DEVICE"
+
+br_setup()
+{
+	local addr
+	addr=$(uci get network.lan.ipaddr)
+	debug "br_setup $addr"
+	ip route add 172.31.0.0/16 dev br-lan scope link src $addr table 2
+	ip route add 172.31.0.0/16 dev br-lan scope link src $addr table 3
+}
+
+mesh_setup()
+{
+	local addr
+	addr=$(uci get network.wlan0.ipaddr)
+	debug "mesh_setup $addr"
+	ip route add 10.0.0.0/8 dev wlan0 scope link src $addr table 2
+	ip route add 10.0.0.0/8 dev wlan0 scope link src $addr table 3
+}
+
+ar1021_setup()
+{
+	local addr
+	addr=$(uci get network.wlan1.ipaddr)
+	debug "ar1021_setup $addr"
+	ip route add 172.30.0.0/16 dev wlan1 scope link src $addr table 2
+	ip route add 172.30.0.0/16 dev wlan1 scope link src $addr table 3
+}
+
+xag_init()
+{
+	local tmp
+	tmp=$(cat /etc/iproute2/rt_tables | grep xag)
+	if [ -z $tmp ]
+	then
+		echo "2 xag0" >> /etc/iproute2/rt_tables
+		echo "3 xag1" >> /etc/iproute2/rt_tables
+	fi
+}
+
+rule_init()
+{
+	ip rule add from all table 2 prio 1
+	ip rule add from all table 3 prio 2
+}
+
+[ ifup = "$ACTION" ] && {
+	xag_init
+	case $DEVICE in
+	br-lan)
+		br_setup
+	;;
+	wlan0)
+		mesh_setup
+	;;
+	wlan1)
+		ar1021_setup
+	;;
+	esac
+	br_setup
+	rule_init
+}
