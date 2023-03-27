@@ -109,6 +109,14 @@ define Package/rtl8761bu-firmware/install
 endef
 $(eval $(call BuildPackage,rtl8761bu-firmware))
 
+Package/rtl8821cu-bt-firmware = $(call Package/firmware-default,RealTek RTL8821CU bt firmware)
+define Package/rtl8821cu-bt-firmware/install
+	$(INSTALL_DIR) $(1)/lib/firmware/rtl_bt
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rtl_bt/rtl8821c_config.bin $(1)/lib/firmware/rtl_bt
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rtl_bt/rtl8821c_fw.bin $(1)/lib/firmware/rtl_bt
+endef
+$(eval $(call BuildPackage,rtl8821cu-bt-firmware))
+
 Package/rtl8821ae-firmware = $(call Package/firmware-default,RealTek RTL8821AE firmware)
 define Package/rtl8821ae-firmware/install
 	$(INSTALL_DIR) $(1)/lib/firmware/rtlwifi

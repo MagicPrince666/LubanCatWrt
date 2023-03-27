@@ -35,6 +35,16 @@ define Device/embedfire_lubancat-zero-n
 endef
 TARGET_DEVICES += embedfire_lubancat-zero-n
 
+define Device/embedfire_lubancat-zero-w
+  DEVICE_VENDOR := EmbedFire
+  DEVICE_MODEL := LubanCat Zero W
+  SOC := rk3566
+  UBOOT_DEVICE_NAME := lubancat-zero-n-rk3566
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script rk356x | pine64-img | gzip | append-metadata
+  DEVICE_PACKAGES := kmod-r8125
+endef
+TARGET_DEVICES += embedfire_lubancat-zero-w
+
 define Device/embedfire_lubancat1
   DEVICE_VENDOR := EmbedFire
   DEVICE_MODEL := LubanCat 1
