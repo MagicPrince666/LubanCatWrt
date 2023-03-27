@@ -1,0 +1,23 @@
+Index: canfd-master/Makefile
+===================================================================
+--- canfd-master.orig/Makefile
++++ canfd-master/Makefile
+@@ -1,4 +1,4 @@
+-CXX = arm-f1c200s-linux-gnueabi-g++
++# CXX = arm-f1c200s-linux-gnueabi-g++
+ TARGET	= canfd
+ 
+ DIR		= . 
+Index: canfd-master/main.cpp
+===================================================================
+--- canfd-master.orig/main.cpp
++++ canfd-master/main.cpp
+@@ -19,7 +19,7 @@
+ #include <pthread.h>
+ #include <errno.h>
+ #include <signal.h>
+-#include <execinfo.h>
++// #include <execinfo.h>
+ #include <time.h>
+ #include <linux/input.h>
+ #include <sys/timerfd.h>
