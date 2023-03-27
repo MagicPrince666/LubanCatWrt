@@ -8,8 +8,8 @@
 #include "rk3566.dtsi"
 
 / {
-	model = "EmbedFire LubanCat Zero N";
-	compatible = "embedfire,lubancat-zero-n", "rockchip,rk3566";
+	model = "EmbedFire LubanCat Zero W";
+	compatible = "embedfire,lubancat-zero-w", "rockchip,rk3566";
 
 	aliases {
 		ethernet0 = &gmac1;

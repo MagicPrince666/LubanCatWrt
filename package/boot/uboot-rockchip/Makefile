@@ -81,6 +81,17 @@ define U-Boot/lubancat-zero-n-rk3566
   DDR:=rk3566_ddr_1056MHz_v1.13.bin
 endef
 
+define U-Boot/lubancat-zero-w-rk3566
+  BUILD_SUBTARGET:=armv8
+  NAME:=LubanCat Zero W
+  BUILD_DEVICES:= \
+    embedfire_lubancat-zero-w
+  DEPENDS:=+PACKAGE_u-boot-lubancat-zero-w-rk3566:arm-trusted-firmware-rk3566
+  PKG_BUILD_DEPENDS:=arm-trusted-firmware-rockchip-vendor
+  ATF:=rk3568_bl31_v1.28.elf
+  DDR:=rk3566_ddr_1056MHz_v1.13.bin
+endef
+
 define U-Boot/lubancat1-rk3566
   BUILD_SUBTARGET:=armv8
   NAME:=LubanCat1
@@ -160,6 +171,7 @@ UBOOT_TARGETS := \
   doornet1-rk3328 \
   doornet2-rk3399 \
   lubancat-zero-n-rk3566 \
+  lubancat-zero-w-rk3566 \
   lubancat1-rk3566 \
   lubancat1n-rk3566 \
   lubancat2-rk3568 \
