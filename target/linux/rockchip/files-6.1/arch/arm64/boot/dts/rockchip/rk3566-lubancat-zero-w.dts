@@ -13,20 +13,12 @@
 	compatible = "embedfire,lubancat-zero-w", "rockchip,rk3566";
 
 	aliases {
-		ethernet0 = &gmac1;
 		mmc0 = &sdmmc0;
 		mmc1 = &sdhci;
 	};
 
 	chosen: chosen {
 		stdout-path = "serial2:1500000n8";
-	};
-
-	gmac1_clkin: external-gmac1-clock {
-		compatible = "fixed-clock";
-		clock-frequency = <125000000>;
-		clock-output-names = "gmac1_clkin";
-		#clock-cells = <0>;
 	};
 	
 	hdmi-con {
@@ -101,6 +93,7 @@
 		pinctrl-0 = <&wifi_enable_h>;
 		pinctrl-names = "default";
 		reset-gpios = <&gpio0 RK_PC1 GPIO_ACTIVE_LOW>;
+		status = "okay";
 	};
 
 	usb_5v: usb-5v-regulator {
@@ -435,40 +428,6 @@
 	status = "okay";
 };
 
-&gmac1 {
-    phy-mode = "rgmii";
-    clock_in_out = "output";
-
-    snps,reset-gpio = <&gpio2 RK_PB0 GPIO_ACTIVE_LOW>;
-    snps,reset-active-low;
-    /* Reset time is 75ms, 100ms */
-    snps,reset-delays-us = <0 75000 100000>;
-
-    assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
-    assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru CLK_MAC1_2TOP>;
-    assigned-clock-rates = <0>, <125000000>;
-
-    pinctrl-names = "default";
-    pinctrl-0 = <&gmac1m1_miim
-             &gmac1m1_tx_bus2_level3
-             &gmac1m1_rx_bus2
-             &gmac1m1_rgmii_clk_level2
-             &gmac1m1_rgmii_bus_level3>;
-
-    tx_delay = <0x24>;
-    rx_delay = <0x08>;
-
-    phy-handle = <&rgmii_phy1>;
-    status = "okay";
-};
-
-&mdio1 {
-	rgmii_phy1: phy@0 {
-		compatible = "ethernet-phy-ieee802.3-c22";
-		reg = <0x0>;
-	};
-};
-
 &pinctrl {
 	leds {
 		sys_led_pin: sys-status-led-pin {
@@ -718,7 +677,7 @@
 &pwm8 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pwm8m0_pins>;
-	status = "okay";
+	status = "disabled";
 };
 
 &pwm9 {
@@ -747,8 +706,9 @@
 		bgr;
 		fps = <30>;
 		buswidth = <8>;
-		reset-gpios = <&gpio1 RK_PB1 GPIO_ACTIVE_LOW>; 	//GPIO1_B1
-		dc-gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;	//GPIO3_A6
+		// reset-gpios = <&gpio1 RK_PB1 GPIO_ACTIVE_LOW>; 	//GPIO1_B1
+		// dc-gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;	//GPIO3_A6
+		dc-gpios = <&gpio1 RK_PA7 GPIO_ACTIVE_HIGH>;	//GPIO1_A7
 		debug = <0>;
 		// backlight = <&backlight>;
 	};
@@ -758,9 +718,11 @@
 		status = "okay";
 		compatible = "ti,tsc2046";
 		interrupt-parent = <&gpio3>;
-		interrupts = <RK_PA7 IRQ_TYPE_LEVEL_LOW>; // GPIO3_A7
+		// interrupts = <RK_PA7 IRQ_TYPE_LEVEL_LOW>; // GPIO3_A7
+		interrupts = <RK_PB1 IRQ_TYPE_LEVEL_LOW>; // GPIO3_B1
 		spi-max-frequency = <1000000>;
-		pendown-gpio = <&gpio3 RK_PA7 GPIO_ACTIVE_LOW>;
+		// pendown-gpio = <&gpio3 RK_PA7 GPIO_ACTIVE_LOW>; // GPIO3_A7
+		pendown-gpio = <&gpio3 RK_PB1 GPIO_ACTIVE_LOW>; // GPIO3_B1
 		vcc-supply = <&vcc3v3_sys>;
 
 		ti,x-min = /bits/ 16 <0>;
