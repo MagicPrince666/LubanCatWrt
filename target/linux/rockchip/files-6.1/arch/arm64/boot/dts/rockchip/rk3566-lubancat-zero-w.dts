@@ -509,28 +509,22 @@
 	};
 
 	pwm8 {
-		/omit-if-no-ref/
 		pwm8m0_pins: pwm8m0-pins {
 			rockchip,pins =
-				/* pwm8_m0 */
 				<3 RK_PB1 5 &pcfg_pull_none>;
 		};
 	};
 
 	pwm9 {
-		/omit-if-no-ref/
 		pwm9m0_pins: pwm9m0-pins {
 			rockchip,pins =
-				/* pwm9_m0 */
 				<3 RK_PB2 5 &pcfg_pull_none>;
 		};
 	};
 
 	pwm11 {
-		/omit-if-no-ref/
 		pwm11m0_pins: pwm11m0-pins {
 			rockchip,pins =
-				/* pwm11_irm0 */
 				<3 RK_PB6 5 &pcfg_pull_none>;
 		};
 	};
@@ -554,7 +548,6 @@
 	};
 
 	uart3 {
-		/omit-if-no-ref/
 		uart3m0_xfer: uart3m0-xfer {
 			rockchip,pins =
 				/* uart3_rxm0 */
@@ -565,7 +558,6 @@
 	};
 
 	uart8 {
-		/omit-if-no-ref/
 		uart8m0_xfer: uart8m0-xfer {
 			rockchip,pins =
 				/* uart8_rxm0 */
@@ -576,7 +568,6 @@
 	};
 
 	i2c5 {
-		/omit-if-no-ref/
 		i2c5m0_xfer: i2c5m0-xfer {
 			rockchip,pins =
 				/* i2c5_sclm0 */
@@ -709,10 +700,12 @@
 };
 
 &spi3 {
+	pinctrl-names = "default";
 	pinctrl-0 = <&spi3m1_pins &spi3_pins_cs>;
 	spi-num-chipselects = <2>;
 	cs-gpios = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>, <&gpio1 RK_PB3 GPIO_ACTIVE_HIGH>;
 	status = "okay";
+
 	ili9341@0 {
 		compatible = "ilitek,ili9341";
 		reg = <0>;
