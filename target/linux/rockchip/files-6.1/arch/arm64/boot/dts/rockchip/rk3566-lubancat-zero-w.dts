@@ -60,22 +60,31 @@
 			default-state = "on";
 		};
 	};
-/*
+
 	backlight: backlight {
         compatible = "pwm-backlight";
-		pwms = <&pwm 8 1000000 PWM_POLARITY_INVERTED>;
+		pwms = <&pwm8 1000000 PWM_POLARITY_INVERTED>;
 		brightness-levels = <0 30 40 50 60 70 100>;
 		default-brightness-level = <6>;
-        status = "disabled";
+        status = "okay";
     };
-*/
+
 	srf04@0 {
 		compatible = "devantech,srf04";
 		pinctrl-names = "default";
-		pinctrl-0 = <&srf04_pin>;
+		pinctrl-0 = <&srf04_pin_1>;
 		trig-gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_HIGH>; // GPIO1_B0
 		echo-gpios = <&gpio1 RK_PA7 GPIO_ACTIVE_HIGH>; // GPIO1_A7
-        status = "disabled";
+        status = "okay";
+	};
+
+	srf04@1 {
+		compatible = "devantech,srf04";
+		pinctrl-names = "default";
+		pinctrl-0 = <&srf04_pin_2>;
+		trig-gpios = <&gpio2 RK_PC3 GPIO_ACTIVE_HIGH>; // GPIO2_C3
+		echo-gpios = <&gpio1 RK_PB1 GPIO_ACTIVE_HIGH>; // GPIO1_B1
+        status = "okay";
 	};
 
     rotary: rotary-encoder {
@@ -471,10 +480,16 @@
 	};
 
 	srf04 {
-		srf04_pin: srf04-pins {
+		srf04_pin_1: srf04-pins {
 			rockchip,pins =
 			<1 RK_PA7 RK_FUNC_GPIO &pcfg_pull_none>,
 			<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		srf04_pin_2: srf04-pins {
+			rockchip,pins =
+			<2 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>,
+			<1 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -640,6 +655,7 @@
 };
 
 &usb2phy1_otg {
+	dr_mode = "host";
 	status = "okay";
 };
 
@@ -706,11 +722,10 @@
 		bgr;
 		fps = <30>;
 		buswidth = <8>;
-		// reset-gpios = <&gpio1 RK_PB1 GPIO_ACTIVE_LOW>; 	//GPIO1_B1
-		// dc-gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;	//GPIO3_A6
-		dc-gpios = <&gpio1 RK_PA7 GPIO_ACTIVE_HIGH>;	//GPIO1_A7
+		reset-gpios = <&gpio1 RK_PB1 GPIO_ACTIVE_LOW>; 	//GPIO1_B1
+		dc-gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;	//GPIO3_A6
 		debug = <0>;
-		// backlight = <&backlight>;
+		backlight = <&backlight>;
 	};
 
 	tsc2046@1 {
@@ -718,11 +733,9 @@
 		status = "okay";
 		compatible = "ti,tsc2046";
 		interrupt-parent = <&gpio3>;
-		// interrupts = <RK_PA7 IRQ_TYPE_LEVEL_LOW>; // GPIO3_A7
-		interrupts = <RK_PB1 IRQ_TYPE_LEVEL_LOW>; // GPIO3_B1
+		interrupts = <RK_PA7 IRQ_TYPE_LEVEL_LOW>; // GPIO3_A7
 		spi-max-frequency = <1000000>;
-		// pendown-gpio = <&gpio3 RK_PA7 GPIO_ACTIVE_LOW>; // GPIO3_A7
-		pendown-gpio = <&gpio3 RK_PB1 GPIO_ACTIVE_LOW>; // GPIO3_B1
+		pendown-gpio = <&gpio3 RK_PA7 GPIO_ACTIVE_LOW>; // GPIO3_A7
 		vcc-supply = <&vcc3v3_sys>;
 
 		ti,x-min = /bits/ 16 <0>;
@@ -748,7 +761,7 @@
 	status = "okay";
 };
 
-&i2c0 {
+&i2c5 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c5m0_xfer>;
 	status = "okay";
