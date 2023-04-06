@@ -1591,6 +1591,20 @@ endef
 
 $(eval $(call KernelPackage,usb-hid-mcp2221))
 
+define KernelPackage/usb-hid-dragonrise
+  SUBMENU:=$(USB_MENU)
+  TITLE:=DragonRise Inc. game controller
+  KCONFIG:=CONFIG_HID_DRAGONRISE
+  DEPENDS:=+kmod-usb-hid
+  FILES:=$(LINUX_DIR)/drivers/hid/hid-dr.ko
+  AUTOLOAD:=$(call AutoProbe,hid-dr)
+endef
+
+define KernelPackage/usb-hid-dragonrise/description
+ DragonRise Inc. game controller
+endef
+
+$(eval $(call KernelPackage,usb-hid-dragonrise))
 
 define KernelPackage/usb-yealink
   TITLE:=USB Yealink VOIP phone
