@@ -480,13 +480,13 @@
 	};
 
 	srf04 {
-		srf04_pin_1: srf04-pins {
+		srf04_pin_1: srf041-pins {
 			rockchip,pins =
 			<1 RK_PA7 RK_FUNC_GPIO &pcfg_pull_none>,
 			<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
-		srf04_pin_2: srf04-pins {
+		srf04_pin_2: srf042-pins {
 			rockchip,pins =
 			<2 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>,
 			<1 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
@@ -621,10 +621,12 @@
 };
 
 &usb2phy0_host {
+	phy-supply = <&usb_5v>;
 	status = "okay";
 };
 
 &usb2phy0_otg {
+	phy-supply = <&usb_5v>;
 	status = "okay";
 };
 
@@ -636,17 +638,28 @@
 	status = "okay";
 };
 
+&usb_host0_xhci {
+	dr_mode = "peripheral";
+	status = "okay";
+};
+
+&usb_host1_xhci {
+	dr_mode = "host";
+	status = "okay";
+};
+
 /* USB Host_2/USB Host_3 USB 2.0 Comb */
 &usb2phy1 {
 	status = "okay";
 };
 
 &usb2phy1_host {
+	phy-supply = <&usb_5v>;
 	status = "okay";
 };
 
 &usb2phy1_otg {
-	dr_mode = "host";
+	phy-supply = <&usb_5v>;
 	status = "okay";
 };
 

@@ -580,3 +580,67 @@ define KernelPackage/iio-ti-am335x-adc/description
 endef
 
 $(eval $(call KernelPackage,iio-ti-am335x-adc))
+
+define KernelPackage/inv-mpu6050-i2c
+  SUBMENU:=$(IIO_MENU)
+  DEPENDS:=+kmod-i2c-mux +kmod-i2c-core +kmod-industrialio-triggered-buffer
+  TITLE:=Invensense MPU6050 devices (I2C)
+  KCONFIG:=CONFIG_INV_MPU6050_I2C
+  FILES:= \
+      $(LINUX_DIR)/drivers/iio/imu/inv_mpu6050/inv-mpu6050-i2c.ko \
+      $(LINUX_DIR)/drivers/iio/imu/inv_mpu6050/inv-mpu6050.ko
+  AUTOLOAD:=$(call AutoProbe,inv-mpu6050-i2c)
+endef
+
+define KernelPackage/inv-mpu6050-i2c/description
+ This driver supports the Invensense MPU6000/6050/6500/6515
+endef
+
+$(eval $(call KernelPackage,inv-mpu6050-i2c))
+
+define KernelPackage/inv-mpu6050-spi
+  SUBMENU:=$(IIO_MENU)
+  DEPENDS:=+kmod-spi-bitbang
+  TITLE:=Invensense MPU6050 devices (SPI)
+  KCONFIG:=CONFIG_INV_MPU6050_SPI
+  FILES:= \
+      $(LINUX_DIR)/drivers/iio/imu/inv_mpu6050/inv-mpu6050-spi.ko \
+      $(LINUX_DIR)/drivers/iio/imu/inv_mpu6050/inv-mpu6050.ko
+  AUTOLOAD:=$(call AutoProbe,inv-mpu6050-spi)
+endef
+
+define KernelPackage/inv-mpu6050-spi/description
+ This driver supports the Invensense MPU6000/6050/6500/6515
+endef
+
+$(eval $(call KernelPackage,inv-mpu6050-spi))
+
+define KernelPackage/vl53l0x-i2c
+  SUBMENU:=$(IIO_MENU)
+  DEPENDS:=+kmod-i2c-core +kmod-iio-core
+  TITLE:=STMicroelectronics VL53L0X ToF ranger sensor (I2C)
+  KCONFIG:=CONFIG_VL53L0X_I2C
+  FILES:=$(LINUX_DIR)/drivers/iio/proximity/vl53l0x-i2c.ko
+  AUTOLOAD:=$(call AutoProbe,vl53l0x-i2c)
+endef
+
+define KernelPackage/vl53l0x-i2c/description
+ A driver for STMicroelectronics VL53L0X
+endef
+
+$(eval $(call KernelPackage,vl53l0x-i2c))
+
+define KernelPackage/srf04
+  SUBMENU:=$(IIO_MENU)
+  DEPENDS:=+kmod-iio-core
+  TITLE:=GPIO bitbanged ultrasonic ranger sensor (SRF04, MB1000)
+  KCONFIG:=CONFIG_SRF04
+  FILES:=$(LINUX_DIR)/drivers/iio/proximity/srf04.ko
+  AUTOLOAD:=$(call AutoProbe,srf04)
+endef
+
+define KernelPackage/srf04/description
+ A driver for GPIO bitbanged ultrasonic
+endef
+
+$(eval $(call KernelPackage,srf04))
