@@ -23,7 +23,7 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Utilities
 	TITLE:=a linux car demo
 	SUBMENU:=Prince
-	DEPENDS:=+libstdcpp +libpthread +kmod-pwm-gpio
+	DEPENDS:=+libstdcpp +libpthread +libx264
 endef
 
 define Package/$(PKG_NAME)/description

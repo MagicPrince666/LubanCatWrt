@@ -86,6 +86,16 @@ define Package/rtl8723bu-firmware/install
 endef
 $(eval $(call BuildPackage,rtl8723bu-firmware))
 
+Package/rtl8723ds_bt-firmware = $(call Package/firmware-default,RealTek RTL8723DS_BT Bluetooth firmware)
+define Package/rtl8723ds_bt-firmware/install
+	$(INSTALL_DIR) $(1)/lib/firmware/rtl_bt
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rtl_bt/rtl8723d_fw.bin $(1)/lib/firmware/rtl_bt
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rtl_bt/rtl8723d_config.bin $(1)/lib/firmware/rtl_bt
+	ln -s rtl8723d_fw.bin $(1)/lib/firmware/rtl_bt/rtl8723ds_fw.bin
+	ln -s rtl8723d_config.bin $(1)/lib/firmware/rtl_bt/rtl8723ds_config.bin
+endef
+$(eval $(call BuildPackage,rtl8723ds_bt-firmware))
+
 Package/rtl8761a-firmware = $(call Package/firmware-default,RealTek RTL8761A firmware)
 define Package/rtl8761a-firmware/install
 	$(INSTALL_DIR) $(1)/lib/firmware/rtl_bt
