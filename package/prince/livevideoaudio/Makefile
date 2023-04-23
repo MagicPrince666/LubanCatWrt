@@ -33,8 +33,8 @@ endef
 CMAKE_OPTIONS += 
 
 define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d
-	$(CP) $(PKG_BUILD_DIR)/LiveVideo $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/init.d
+	$(CP) $(PKG_BUILD_DIR)/LiveVideo $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))

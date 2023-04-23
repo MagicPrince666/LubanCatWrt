@@ -4,7 +4,7 @@ START=70
 STOP=90
 
 USE_PROCD=1
-PROG=/usr/sbin/rtk_hciattach
+PROG=/usr/bin/rtk_hciattach
 DEPEN=bluetoothd
 start_service() {
 

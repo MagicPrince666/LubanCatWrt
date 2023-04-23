@@ -38,8 +38,8 @@ define Build/Configure
 endef
 
 define Package/rtk_hciattach/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rtk_hciattach $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rtk_hciattach $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,rtk_hciattach))
