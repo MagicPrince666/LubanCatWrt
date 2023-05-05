@@ -1,0 +1,26 @@
+Index: rtl8812au-ct-2021-11-07-39df5596/hal/hal_hci/hal_usb.c
+===================================================================
+--- rtl8812au-ct-2021-11-07-39df5596.orig/hal/hal_hci/hal_usb.c
++++ rtl8812au-ct-2021-11-07-39df5596/hal/hal_hci/hal_usb.c
+@@ -35,7 +35,7 @@ int	usb_init_recv_priv(_adapter *padapte
+ 
+ #ifdef PLATFORM_LINUX
+ 	tasklet_init(&precvpriv->recv_tasklet,
+-	             (void(*)(unsigned long))usb_recv_tasklet,
++	             (void(*))usb_recv_tasklet,
+ 	             (unsigned long)padapter);
+ #endif /* PLATFORM_LINUX */
+ 
+Index: rtl8812au-ct-2021-11-07-39df5596/hal/rtl8812a/usb/rtl8812au_xmit.c
+===================================================================
+--- rtl8812au-ct-2021-11-07-39df5596.orig/hal/rtl8812a/usb/rtl8812au_xmit.c
++++ rtl8812au-ct-2021-11-07-39df5596/hal/rtl8812a/usb/rtl8812au_xmit.c
+@@ -30,7 +30,7 @@ s32	rtl8812au_init_xmit_priv(_adapter *p
+ 
+ #ifdef PLATFORM_LINUX
+ 	tasklet_init(&pxmitpriv->xmit_tasklet,
+-	             (void(*)(unsigned long))rtl8812au_xmit_tasklet,
++	             (void(*))rtl8812au_xmit_tasklet,
+ 	             (unsigned long)padapter);
+ #endif
+ #ifdef CONFIG_TX_EARLY_MODE
