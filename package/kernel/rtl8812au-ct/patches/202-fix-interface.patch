@@ -1,0 +1,103 @@
+Index: rtl8812au-ct-2021-11-07-39df5596/os_dep/linux/os_intfs.c
+===================================================================
+--- rtl8812au-ct-2021-11-07-39df5596.orig/os_dep/linux/os_intfs.c
++++ rtl8812au-ct-2021-11-07-39df5596/os_dep/linux/os_intfs.c
+@@ -2254,7 +2254,11 @@ static int _rtw_drv_register_netdev(_ada
+ 	/* alloc netdev name */
+ 	rtw_init_netdev_name(pnetdev, name);
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	_rtw_memcpy(pnetdev->dev_addr, padapter->eeprompriv.mac_addr, ETH_ALEN);
++#else
++	dev_addr_set(pnetdev, padapter->eeprompriv.mac_addr); /* set mac addr to net_device */
++#endif
+ 
+ 	/* Tell the network stack we exist */
+ 	if (register_netdev(pnetdev) != 0) {
+Index: rtl8812au-ct-2021-11-07-39df5596/include/drv_types.h
+===================================================================
+--- rtl8812au-ct-2021-11-07-39df5596.orig/include/drv_types.h
++++ rtl8812au-ct-2021-11-07-39df5596/include/drv_types.h
+@@ -1087,6 +1087,7 @@ struct _ADAPTER {
+ #define adapter_to_dvobj(adapter) (adapter->dvobj)
+ #define adapter_to_pwrctl(adapter) (dvobj_to_pwrctl(adapter->dvobj))
+ #define adapter_wdev_data(adapter) (&((adapter)->wdev_data))
++#define adapter_mac_addr(adapter) (adapter->mac_addr)
+ 
+ //
+ // Function disabled.
+Index: rtl8812au-ct-2021-11-07-39df5596/os_dep/linux/rtw_proc.c
+===================================================================
+--- rtl8812au-ct-2021-11-07-39df5596.orig/os_dep/linux/rtw_proc.c
++++ rtl8812au-ct-2021-11-07-39df5596/os_dep/linux/rtw_proc.c
+@@ -164,14 +164,22 @@ const int drv_proc_hdls_num = sizeof(drv
+ static int rtw_drv_proc_open(struct inode *inode, struct file *file)
+ {
+ 	//struct net_device *dev = proc_get_parent_data(inode);
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	ssize_t index = (ssize_t)PDE_DATA(inode);
++#else
++	ssize_t index = (ssize_t)pde_data(inode);
++#endif
+ 	const struct rtw_proc_hdl *hdl = drv_proc_hdls+index;
+ 	return single_open(file, hdl->show, NULL);
+ }
+ 
+ static ssize_t rtw_drv_proc_write(struct file *file, const char __user *buffer, size_t count, loff_t *pos)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	ssize_t index = (ssize_t)PDE_DATA(file_inode(file));
++#else
++	ssize_t index = (ssize_t)pde_data(file_inode(file));
++#endif
+ 	const struct rtw_proc_hdl *hdl = drv_proc_hdls+index;
+ 	ssize_t (*write)(struct file *, const char __user *, size_t, loff_t *, void *) = hdl->write;
+ 
+@@ -782,7 +790,11 @@ const int adapter_proc_hdls_num = sizeof
+ 
+ static int rtw_adapter_proc_open(struct inode *inode, struct file *file)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	ssize_t index = (ssize_t)PDE_DATA(inode);
++#else
++	ssize_t index = (ssize_t)pde_data(inode);
++#endif
+ 	const struct rtw_proc_hdl *hdl = adapter_proc_hdls+index;
+ 
+ 	return single_open(file, hdl->show, proc_get_parent_data(inode));
+@@ -790,7 +802,11 @@ static int rtw_adapter_proc_open(struct
+ 
+ static ssize_t rtw_adapter_proc_write(struct file *file, const char __user *buffer, size_t count, loff_t *pos)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	ssize_t index = (ssize_t)PDE_DATA(file_inode(file));
++#else
++	ssize_t index = (ssize_t)pde_data(file_inode(file));
++#endif
+ 	const struct rtw_proc_hdl *hdl = adapter_proc_hdls+index;
+ 	ssize_t (*write)(struct file *, const char __user *, size_t, loff_t *, void *) = hdl->write;
+ 
+@@ -1046,7 +1062,11 @@ const int odm_proc_hdls_num = sizeof(odm
+ 
+ static int rtw_odm_proc_open(struct inode *inode, struct file *file)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	ssize_t index = (ssize_t)PDE_DATA(inode);
++#else
++	ssize_t index = (ssize_t)pde_data(inode);
++#endif
+ 	const struct rtw_proc_hdl *hdl = odm_proc_hdls+index;
+ 
+ 	return single_open(file, hdl->show, proc_get_parent_data(inode));
+@@ -1054,7 +1074,11 @@ static int rtw_odm_proc_open(struct inod
+ 
+ static ssize_t rtw_odm_proc_write(struct file *file, const char __user *buffer, size_t count, loff_t *pos)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	ssize_t index = (ssize_t)PDE_DATA(file_inode(file));
++#else
++	ssize_t index = (ssize_t)pde_data(file_inode(file));
++#endif
+ 	const struct rtw_proc_hdl *hdl = odm_proc_hdls+index;
+ 	ssize_t (*write)(struct file *, const char __user *, size_t, loff_t *, void *) = hdl->write;
+ 
