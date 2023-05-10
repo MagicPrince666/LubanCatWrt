@@ -80,6 +80,7 @@ then
     echo "[4] LubanCat1N"
     echo "[5] LubanCat2"
     echo "[6] LubanCat2N"
+    echo "[7] LubanCatZeroN"
     echo "---------------------------------------------------------"
     read input
 
@@ -115,6 +116,11 @@ then
             DEVICE_NAME=LubanCat2N
             OUTPUT_DIR=EmbedFire_LubanCat2N/
             device_name=lubancat2n
+            ;;
+        7)
+            DEVICE_NAME=LubanCatZeroN
+            OUTPUT_DIR=EmbedFire_LubanCatZeroN/
+            device_name=lubancatzeron
             ;;
         *)
             echo 'input device number error, exit !'
