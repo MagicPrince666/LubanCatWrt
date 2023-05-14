@@ -203,16 +203,14 @@ detect_mac80211() {
 			set wireless.${name}.channel=${channel}
 			set wireless.${name}.band=${mode_band}
 			set wireless.${name}.htmode=$htmode
-			set wireless.${name}.disabled=0
+			set wireless.${name}.disabled=1
 
 			set wireless.default_${name}=wifi-iface
 			set wireless.default_${name}.device=${name}
 			set wireless.default_${name}.network=lan
 			set wireless.default_${name}.mode=ap
-			set wireless.default_${name}.ssid=DoorNet-${name}
-			set wireless.default_${name}.encryption=psk2
-			set wireless.default_${name}.key=password
-
+			set wireless.default_${name}.ssid=OpenWrt
+			set wireless.default_${name}.encryption=none
 EOF
 		uci -q commit wireless
 	done

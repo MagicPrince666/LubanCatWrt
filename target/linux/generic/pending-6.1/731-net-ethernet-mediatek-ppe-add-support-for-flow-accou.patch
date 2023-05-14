@@ -147,10 +147,10 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  static void mtk_ppe_cache_clear(struct mtk_ppe *ppe)
  {
  	ppe_set(ppe, MTK_PPE_CACHE_CTL, MTK_PPE_CACHE_CTL_CLEAR);
-@@ -438,6 +478,13 @@ __mtk_foe_entry_clear(struct mtk_ppe *pp
- 		hwe->ib1 &= ~MTK_FOE_IB1_STATE;
+@@ -439,6 +479,13 @@ __mtk_foe_entry_clear(struct mtk_ppe *pp
  		hwe->ib1 |= FIELD_PREP(MTK_FOE_IB1_STATE, MTK_FOE_STATE_INVALID);
  		dma_wmb();
+ 		mtk_ppe_cache_clear(ppe);
 +		if (ppe->accounting) {
 +			struct mtk_foe_accounting *acct;
 +
@@ -161,7 +161,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	}
  	entry->hash = 0xffff;
  
-@@ -545,6 +592,9 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
+@@ -546,6 +593,9 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
  	wmb();
  	hwe->ib1 = entry->ib1;
  
@@ -171,7 +171,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	dma_wmb();
  
  	mtk_ppe_cache_clear(ppe);
-@@ -736,14 +786,42 @@ int mtk_ppe_prepare_reset(struct mtk_ppe
+@@ -737,14 +787,42 @@ int mtk_ppe_prepare_reset(struct mtk_ppe
  	return mtk_ppe_wait_busy(ppe);
  }
  
@@ -215,7 +215,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  
  	ppe = devm_kzalloc(dev, sizeof(*ppe), GFP_KERNEL);
  	if (!ppe)
-@@ -758,6 +836,7 @@ struct mtk_ppe *mtk_ppe_init(struct mtk_
+@@ -759,6 +837,7 @@ struct mtk_ppe *mtk_ppe_init(struct mtk_
  	ppe->eth = eth;
  	ppe->dev = dev;
  	ppe->version = version;
@@ -223,7 +223,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  
  	foe = dmam_alloc_coherent(ppe->dev,
  				  MTK_PPE_ENTRIES * soc->foe_entry_size,
-@@ -773,6 +852,25 @@ struct mtk_ppe *mtk_ppe_init(struct mtk_
+@@ -774,6 +853,25 @@ struct mtk_ppe *mtk_ppe_init(struct mtk_
  	if (!ppe->foe_flow)
  		goto err_free_l2_flows;
  
@@ -249,7 +249,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	mtk_ppe_debugfs_init(ppe, index);
  
  	return ppe;
-@@ -902,6 +1000,16 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
+@@ -903,6 +1001,16 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
  		ppe_w32(ppe, MTK_PPE_DEFAULT_CPU_PORT1, 0xcb777);
  		ppe_w32(ppe, MTK_PPE_SBW_CTRL, 0x7f);
  	}
