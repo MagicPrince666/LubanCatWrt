@@ -33,9 +33,10 @@ endef
 CMAKE_OPTIONS += 
 
 define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc $(1)/etc/init.d
 	$(CP) $(PKG_BUILD_DIR)/SmartCar $(1)/usr/bin/
 	$(CP) $(PKG_BUILD_DIR)/smart_car $(1)/etc/init.d/
+	$(CP) $(PKG_BUILD_DIR)/docs/lubancat_zero_w.json $(1)/etc/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))

@@ -20,6 +20,12 @@
 	chosen: chosen {
 		stdout-path = "serial2:1500000n8";
 	};
+
+	mcp251x_clk: can-osc {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <8000000>;
+	};
 	
 	hdmi-con {
 		compatible = "hdmi-connector";
@@ -718,6 +724,20 @@
 	spi-num-chipselects = <2>;
 	cs-gpios = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>, <&gpio1 RK_PB3 GPIO_ACTIVE_HIGH>;
 	status = "okay";
+
+	mcp2515@0 {
+		compatible = "microchip,mcp2515";
+		spi-max-frequency = <5000000>;
+		reg = <0>;
+		clocks = <&mcp251x_clk>;
+		vdd-supply = <&vcc3v3_sys>;
+		xceiver-supply = <&vcc3v3_sys>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&t_irq>;
+		interrupt-parent = <&gpio3>;
+		interrupts = <RK_PA7 IRQ_TYPE_LEVEL_LOW>; // GPIO3_A7
+		status = "disabled";
+	};
 
 	ili9341@0 {
 		compatible = "ilitek,ili9341";
