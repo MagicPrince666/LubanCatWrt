@@ -15,6 +15,9 @@
 	aliases {
 		mmc0 = &sdmmc0;
 		mmc1 = &sdhci;
+		serial2 = &uart2;
+		serial3 = &uart3;
+		serial8 = &uart8;
 	};
 
 	chosen: chosen {
@@ -50,16 +53,16 @@
 			pinctrl-0 = <&sys_led_pin>;
 		};
 
-		lpwm {
-			label = "lpwm";
+		moto-ena {
+			label = "moto-ena";
 			pinctrl-names = "default";
 			pinctrl-0 = <&lpwm_pin>;
 			gpios = <&gpio2 RK_PC4 GPIO_ACTIVE_HIGH>; // GPIO2_C4
 			default-state = "on";
 		};
 
-		rpwm {
-			label = "rpwm";
+		moto-enb {
+			label = "moto-enb";
 			pinctrl-names = "default";
 			pinctrl-0 = <&rpwm_pin>;
 			gpios = <&gpio1 RK_PA5 GPIO_ACTIVE_HIGH>; // GPIO1_A5
@@ -139,10 +142,6 @@
 		regulator-max-microvolt = <3300000>;
 		vin-supply = <&vcc5v0_sys>;
 	};
-};
-
-&uart2 {
-	status = "okay";
 };
 
 &combphy1 {
@@ -553,6 +552,17 @@
 		};
 	};
 
+	uart2 {
+		/omit-if-no-ref/
+		uart2m0_xfer: uart2m0-xfer {
+			rockchip,pins =
+				/* uart2_rxm0 */
+				<0 RK_PD0 1 &pcfg_pull_up>,
+				/* uart2_txm0 */
+				<0 RK_PD1 1 &pcfg_pull_up>;
+		};
+	};
+
 	uart3 {
 		uart3m0_xfer: uart3m0-xfer {
 			rockchip,pins =
@@ -789,6 +799,12 @@
 
 		wakeup-source;
 	};
+};
+
+&uart2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart2m0_xfer>;
+	status = "okay";
 };
 
 &uart3 {
