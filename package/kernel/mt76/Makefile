@@ -8,9 +8,9 @@ PKG_LICENSE_FILES:=
 
 PKG_SOURCE_URL:=https://github.com/openwrt/mt76
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2023-04-18
-PKG_SOURCE_VERSION:=cddbd796bbc649debe457f7b34b200bbda4fcc53
-PKG_MIRROR_HASH:=3c9e24863f3e045dbab1d05cf760ef0f4a21106766987558ce4df6c0964df11a
+PKG_SOURCE_DATE:=2023-07-26
+PKG_SOURCE_VERSION:=cd3dfe39276905307cc028ac8edf2c06963cda23
+PKG_MIRROR_HASH:=413d2d0faa81d834ba13cb9e503e1e3a61e3e071014da6b525a123e5da053f90
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 PKG_USE_NINJA:=0
@@ -266,7 +266,7 @@ define KernelPackage/mt7921-common
   $(KernelPackage/mt76-default)
   TITLE:=MediaTek MT7615 wireless driver common code
   HIDDEN:=1
-  DEPENDS+=+kmod-mt76-connac +kmod-mt7921-firmware +@DRIVER_11AX_SUPPORT
+  DEPENDS+=+kmod-mt76-connac +kmod-mt7921-firmware +@DRIVER_11AX_SUPPORT +kmod-hwmon-core
   FILES:= $(PKG_BUILD_DIR)/mt7921/mt7921-common.ko
 endef
 

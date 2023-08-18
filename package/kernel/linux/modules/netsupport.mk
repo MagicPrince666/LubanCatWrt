@@ -1363,6 +1363,21 @@ endef
 
 $(eval $(call KernelPackage,mdio))
 
+define KernelPackage/mdio-bus-mux
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=MDIO bus multiplexers
+  KCONFIG:=CONFIG_MDIO_BUS_MUX
+  HIDDEN:=1
+  FILES:=$(LINUX_DIR)/drivers/net/mdio/mdio-mux.ko
+  AUTOLOAD:=$(call AutoLoad,32,mdio-mux)
+endef
+
+define KernelPackage/mdio-bus-mux/description
+ Kernel framework for MDIO bus multiplexers.
+endef
+
+$(eval $(call KernelPackage,mdio-bus-mux))
+
 define KernelPackage/macsec
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=IEEE 802.1AE MAC-level encryption (MAC)
@@ -1417,6 +1432,22 @@ native Linux tools such as ss.
 endef
 
 $(eval $(call KernelPackage,inet-diag))
+
+
+define KernelPackage/xdp-sockets-diag
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=PF_XDP sockets monitoring interface support for ss utility
+  DEPENDS:=@KERNEL_XDP_SOCKETS
+  KCONFIG:=CONFIG_XDP_SOCKETS_DIAG
+  FILES:=$(LINUX_DIR)/net/xdp/xsk_diag.ko
+  AUTOLOAD:=$(call AutoLoad,31,xsk_diag)
+endef
+
+define KernelPackage/xdp-sockets-diag/description
+ Support for PF_XDP sockets monitoring interface used by the ss tool
+endef
+
+$(eval $(call KernelPackage,xdp-sockets-diag))
 
 
 define KernelPackage/wireguard
@@ -1496,7 +1527,7 @@ $(eval $(call KernelPackage,qrtr-tun))
 define KernelPackage/qrtr-smd
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=SMD IPC Router channels
-  DEPENDS:=+kmod-qrtr @TARGET_ipq807x
+  DEPENDS:=+kmod-qrtr @TARGET_qualcommax
   KCONFIG:=CONFIG_QRTR_SMD
   FILES:= $(LINUX_DIR)/net/qrtr/qrtr-smd.ko
   AUTOLOAD:=$(call AutoProbe,qrtr-smd)
