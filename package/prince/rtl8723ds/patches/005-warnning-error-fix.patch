@@ -1,0 +1,13 @@
+Index: rtl8723ds-sdio-master/core/rtw_debug.c
+===================================================================
+--- rtl8723ds-sdio-master.orig/core/rtw_debug.c
++++ rtl8723ds-sdio-master/core/rtw_debug.c
+@@ -22,6 +22,8 @@
+ #include <drv_types.h>
+ #include <hal_data.h>
+ 
++#define EFUSE_MAP_PATH "/system/etc/wifi/wifi_efuse_8723ds.map"
++
+ #ifdef CONFIG_RTW_DEBUG
+ static const char *rtw_log_level_str[] = {
+ 	"_DRV_NONE_ = 0",
