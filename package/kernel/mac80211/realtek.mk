@@ -179,7 +179,7 @@ define KernelPackage/rtw88
 	$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtw88/rtw88_8723d.ko \
 	$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtw88/rtw88_core.ko \
 	$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtw88/rtw88_pci.ko
-  AUTOLOAD:=$(call AutoProbe,rtw88_8822be rtw88_8822ce rtw88_8723de)
+  AUTOLOAD:=$(call AutoProbe,rtw88_8822be rtw88_8822ce rtw88_8723d rtw88_8723de)
 endef
 
 define KernelPackage/rtl8723bs

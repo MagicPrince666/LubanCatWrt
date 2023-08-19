@@ -1,0 +1,13 @@
+Index: rtl8723ds-sdio-master/os_dep/linux/os_intfs.c
+===================================================================
+--- rtl8723ds-sdio-master.orig/os_dep/linux/os_intfs.c
++++ rtl8723ds-sdio-master/os_dep/linux/os_intfs.c
+@@ -2215,7 +2215,7 @@ int _netdev_vir_if_open(struct net_devic
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 		_rtw_memcpy(pnetdev->dev_addr, adapter_mac_addr(padapter), ETH_ALEN);
+ #else
+-		dev_addr_set(pnetdev, adapter_mac_addr(padapter);
++		dev_addr_set(pnetdev, adapter_mac_addr(padapter));
+ #endif
+ 	}
+ #endif /*CONFIG_PLATFORM_INTEL_BYT*/

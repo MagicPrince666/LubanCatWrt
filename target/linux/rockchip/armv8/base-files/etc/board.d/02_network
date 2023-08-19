@@ -20,6 +20,10 @@ rockchip_setup_interfaces()
 	embedfire,lubancat2n)
 		ucidef_set_interfaces_lan_wan "eth1 eth2 eth3" "eth0"
 		;;
+	radxa,rockpis|\
+	i2c,cputools-i6s)
+		ucidef_set_interface_lan 'eth0'
+		;;
 	*)
 		ucidef_set_interface_lan 'eth0'
 		;;

@@ -1,0 +1,69 @@
+Index: rtl8723ds-sdio-master/Makefile
+===================================================================
+--- rtl8723ds-sdio-master.orig/Makefile
++++ rtl8723ds-sdio-master/Makefile
+@@ -20,8 +20,8 @@ ifeq ($(GCC_VER_49),1)
+ EXTRA_CFLAGS += -Wno-date-time	# Fix compile error && warning on gcc 4.9 and later
+ endif
+ 
+-EXTRA_CFLAGS += -I$(src)/include
+-EXTRA_CFLAGS += -I$(src)/hal/phydm
++# EXTRA_CFLAGS += -I./include
++# EXTRA_CFLAGS += -I./hal/phydm
+ 
+ EXTRA_LDFLAGS += --strip-debug
+ 
+@@ -235,11 +235,11 @@ _OUTSRC_FILES := hal/phydm/phydm_debug.o
+ 		hal/phydm/phydm_ccx.o
+ 
+ 
+-EXTRA_CFLAGS += -I$(src)/platform
++# EXTRA_CFLAGS += -I./platform
+ _PLATFORM_FILES := platform/platform_ops.o
+ 
+ ifeq ($(CONFIG_BT_COEXIST), y)
+-EXTRA_CFLAGS += -I$(src)/hal/btc
++# EXTRA_CFLAGS += -I./hal/btc
+ _OUTSRC_FILES += hal/btc/HalBtc8192e1Ant.o \
+ 				hal/btc/HalBtc8192e2Ant.o \
+ 				hal/btc/HalBtc8723b1Ant.o \
+@@ -822,6 +822,8 @@ else ifeq ($(MODULE_NAME), 8189es)
+ EXTRA_CFLAGS += -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_8189e.map\"
+ else ifeq ($(MODULE_NAME), 8723bs)
+ EXTRA_CFLAGS += -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_8723bs.map\"
++else ifeq ($(MODULE_NAME), 8723ds)
++EXTRA_CFLAGS += -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_8723ds.map\"
+ else
+ EXTRA_CFLAGS += -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_$(MODULE_NAME).map\"
+ endif
+@@ -1812,7 +1814,7 @@ export CONFIG_RTL8723DS = m
+ all: modules
+ 
+ modules:
+-	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
++	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(PKG_BUILD_DIR)  modules
+ 
+ strip:
+ 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
+@@ -1833,7 +1835,7 @@ config_r:
+ .PHONY: modules clean
+ 
+ clean:
+-	#$(MAKE) -C $(KSRC) M=$(shell pwd) clean
++	#$(MAKE) -C $(KSRC) M=$(PKG_BUILD_DIR) clean
+ 	cd hal ; rm -fr */*/*/*.mod.c */*/*/*.mod */*/*/*.o */*/*/.*.cmd */*/*/*.ko
+ 	cd hal ; rm -fr */*/*.mod.c */*/*.mod */*/*.o */*/.*.cmd */*/*.ko
+ 	cd hal ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
+Index: rtl8723ds-sdio-master/core/rtw_debug.c
+===================================================================
+--- rtl8723ds-sdio-master.orig/core/rtw_debug.c
++++ rtl8723ds-sdio-master/core/rtw_debug.c
+@@ -47,7 +47,7 @@ static const char *rtw_log_level_str[] =
+ void dump_drv_version(void *sel)
+ {
+ 	RTW_PRINT_SEL(sel, "%s %s\n", DRV_NAME, DRIVERVERSION);
+-	RTW_PRINT_SEL(sel, "build time: %s %s\n", __DATE__, __TIME__);
++	// RTW_PRINT_SEL(sel, "build time: %s %s\n", __DATE__, __TIME__);
+ }
+ 
+ void dump_drv_cfg(void *sel)

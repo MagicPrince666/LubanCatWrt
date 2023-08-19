@@ -488,9 +488,9 @@
 	cs-gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_HIGH>, <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
     status = "okay";
 
+/*
 	ili9341@0 {
 		compatible = "ilitek,ili9341";
-		// compatible = "adafruit,yx240qv29";
 		reg = <0>;
 		status = "okay";
 		pinctrl-names = "default";
@@ -503,6 +503,43 @@
 		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_LOW>; 	// GPIO2_C0
 		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;	// GPIO2_B7
 		debug = <0>;
+		backlight = <&backlight>;
+	};
+	panel: display@0 {
+		compatible = "st,sf-tc240t-9370-t",
+						"ilitek,ili9341";
+		reg = <0>;
+		spi-3wire;
+		spi-max-frequency = <10000000>;
+		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
+		port {
+			panel_in: endpoint {
+				remote-endpoint = <&display_out>;
+			};
+		};
+	};
+	display@1{
+		compatible = "adafruit,yx240qv29", "ilitek,ili9341";
+		reg = <1>;
+		spi-max-frequency = <10000000>;
+		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_LOW>;
+		rotation = <90>;
+		backlight = <&backlight>;
+	};
+*/
+	display@0{
+		compatible = "adafruit,yx240qv29", "ilitek,ili9341";
+		pinctrl-names = "default";
+		pinctrl-0 = <&tft_gpio_pins>;
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_LOW>;
+		rotation = <90>;
+		bgr;
+		fps = <30>;
+		buswidth = <8>;
 		backlight = <&backlight>;
 	};
 
