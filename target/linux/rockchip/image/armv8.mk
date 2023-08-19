@@ -97,6 +97,6 @@ define Device/radxa_rock-pi-s
 		libimobiledevice-utils libusbmuxd-utils plistutil usb-modeswitch usbids usbutils v4l-utils luci luci-theme-openwrt-2020 \
 		luci-app-ddns kmod-rtw88 kmod-fb-tft-ili9341 kmod-video-core kmod-video-uvc kmod-usb-gadget-filesystem kmod-usb-net-ipheth \
 		kmod-usb-net-rndis kmod-usb-storage-extras kmod-usb2 kmod-sound-core kmod-usb-audio kmod-input-touchscreen-ads7846 \
-		kmod-input-joydev kmod-usb-hid-dragonrise kmod-inv-mpu6050-i2c
+		kmod-input-joydev kmod-usb-hid-dragonrise
 endef
 TARGET_DEVICES += radxa_rock-pi-s

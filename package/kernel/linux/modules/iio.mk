@@ -11,6 +11,7 @@ define KernelPackage/iio-core
   TITLE:=Industrial IO core
   KCONFIG:= \
 	CONFIG_IIO \
+  CONFIG_IIO_SCMI \
 	CONFIG_IIO_BUFFER=y \
 	CONFIG_IIO_TRIGGER=y
   FILES:=$(LINUX_DIR)/drivers/iio/industrialio.ko
@@ -580,3 +581,33 @@ define KernelPackage/iio-ti-am335x-adc/description
 endef
 
 $(eval $(call KernelPackage,iio-ti-am335x-adc))
+
+define KernelPackage/vl53l0x-i2c
+  SUBMENU:=$(IIO_MENU)
+  DEPENDS:=+kmod-i2c-core +kmod-iio-core
+  TITLE:=STMicroelectronics VL53L0X ToF ranger sensor (I2C)
+  KCONFIG:=CONFIG_VL53L0X_I2C
+  FILES:=$(LINUX_DIR)/drivers/iio/proximity/vl53l0x-i2c.ko
+  AUTOLOAD:=$(call AutoProbe,vl53l0x-i2c)
+endef
+
+define KernelPackage/vl53l0x-i2c/description
+ A driver for STMicroelectronics VL53L0X
+endef
+
+$(eval $(call KernelPackage,vl53l0x-i2c))
+
+define KernelPackage/srf04
+  SUBMENU:=$(IIO_MENU)
+  DEPENDS:=+kmod-iio-core
+  TITLE:=GPIO bitbanged ultrasonic ranger sensor (SRF04, MB1000)
+  KCONFIG:=CONFIG_SRF04
+  FILES:=$(LINUX_DIR)/drivers/iio/proximity/srf04.ko
+  AUTOLOAD:=$(call AutoProbe,srf04)
+endef
+
+define KernelPackage/srf04/description
+ A driver for GPIO bitbanged ultrasonic
+endef
+
+$(eval $(call KernelPackage,srf04))

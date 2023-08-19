@@ -54,6 +54,20 @@ endef
 
 $(eval $(call KernelPackage,backlight-pwm))
 
+define KernelPackage/backlight-gpio
+	SUBMENU:=$(VIDEO_MENU)
+	TITLE:=GPIO Backlight support
+	DEPENDS:=+kmod-backlight
+	KCONFIG:=CONFIG_BACKLIGHT_GPIO
+	FILES:=$(LINUX_DIR)/drivers/video/backlight/gpio_backlight.ko
+	AUTOLOAD:=$(call AutoProbe,video gpio_backlight)
+endef
+
+define KernelPackage/backlight-gpio/description
+	Kernel module for GPIO based Backlight support.
+endef
+
+$(eval $(call KernelPackage,backlight-gpio))
 
 define KernelPackage/fb
   SUBMENU:=$(VIDEO_MENU)
@@ -221,6 +235,20 @@ endef
 
 $(eval $(call KernelPackage,fb-tft-ili9486))
 
+define KernelPackage/fb-tft-ili9341
+	SUBMENU:=$(VIDEO_MENU)
+	TITLE:=FB driver for the ILI9341 LCD Controller
+	DEPENDS:=+kmod-fb-tft
+	KCONFIG:=CONFIG_FB_TFT_ILI9341
+	FILES:=$(LINUX_DIR)/drivers/staging/fbtft/fb_ili9341.ko
+	AUTOLOAD:=$(call AutoLoad,09,fb_ili9341)
+endef
+
+define KernelPackage/fb-tft-ili9341/description
+	FB driver for the ILI9341 LCD Controller
+endef
+
+$(eval $(call KernelPackage,fb-tft-ili9341))
 
 define KernelPackage/drm
   SUBMENU:=$(VIDEO_MENU)
