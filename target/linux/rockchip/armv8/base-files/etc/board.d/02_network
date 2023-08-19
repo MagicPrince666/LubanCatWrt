@@ -22,7 +22,7 @@ rockchip_setup_interfaces()
 		;;
 	radxa,rockpis|\
 	i2c,cputools-i6s)
-		ucidef_set_interface_lan 'eth0'
+		ucidef_set_interface_wan 'eth0'
 		;;
 	*)
 		ucidef_set_interface_lan 'eth0'
