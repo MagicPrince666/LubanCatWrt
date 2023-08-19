@@ -490,6 +490,7 @@
 
 	ili9341@0 {
 		compatible = "ilitek,ili9341";
+		// compatible = "adafruit,yx240qv29";
 		reg = <0>;
 		status = "okay";
 		pinctrl-names = "default";
