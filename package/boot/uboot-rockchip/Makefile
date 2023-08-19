@@ -87,7 +87,7 @@ define U-Boot/cputools-i6s-rk3308
 	BUILD_SUBTARGET:=armv8
 	NAME:=CPUTOOLS I6S
 	BUILD_DEVICES:= \
-		cputools-i6s
+		i2c_cputools-i6s
 	DEPENDS:=+PACKAGE_u-boot-cputools-i6s-rk3308:arm-trusted-firmware-rk3308
 	PKG_BUILD_DEPENDS:=arm-trusted-firmware-rockchip-vendor
 	ATF:=rk3308_bl31_v2.25.elf
