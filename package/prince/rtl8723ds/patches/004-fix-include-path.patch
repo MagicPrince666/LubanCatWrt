@@ -8,8 +8,8 @@ Index: rtl8723ds-sdio-master/Makefile
  
 -EXTRA_CFLAGS += -I$(src)/include
 -EXTRA_CFLAGS += -I$(src)/hal/phydm
-+# EXTRA_CFLAGS += -I./include
-+# EXTRA_CFLAGS += -I./hal/phydm
++EXTRA_CFLAGS += -I./include
++EXTRA_CFLAGS += -I./hal/phydm
  
  EXTRA_LDFLAGS += --strip-debug
  
@@ -18,12 +18,12 @@ Index: rtl8723ds-sdio-master/Makefile
  
  
 -EXTRA_CFLAGS += -I$(src)/platform
-+# EXTRA_CFLAGS += -I./platform
++EXTRA_CFLAGS += -I./platform
  _PLATFORM_FILES := platform/platform_ops.o
  
  ifeq ($(CONFIG_BT_COEXIST), y)
 -EXTRA_CFLAGS += -I$(src)/hal/btc
-+# EXTRA_CFLAGS += -I./hal/btc
++EXTRA_CFLAGS += -I./hal/btc
  _OUTSRC_FILES += hal/btc/HalBtc8192e1Ant.o \
  				hal/btc/HalBtc8192e2Ant.o \
  				hal/btc/HalBtc8723b1Ant.o \
