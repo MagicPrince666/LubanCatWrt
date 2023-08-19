@@ -100,3 +100,19 @@ define Device/radxa_rock-pi-s
 		kmod-input-joydev kmod-usb-hid-dragonrise
 endef
 TARGET_DEVICES += radxa_rock-pi-s
+
+define Device/i2c_cputools-i6s
+	DEVICE_VENDOR := I2C
+	DEVICE_MODEL := CPUTOOLS I6S
+	SOC := rk3308
+	SUPPORTED_DEVICES := i2c,cputools-i6s
+	UBOOT_DEVICE_NAME := cputools-i6s-rk3308
+	IMAGE/sysupgrade.img.gz := boot-common | boot-script rock-pi-s | rockpis-img | gzip | append-metadata
+	# CONFIG_TARGET_ROOTFS_PARTSIZE := 900
+	DEVICE_PACKAGES:=bluez-tools rtk_hciattach ideviceinstaller idevicerestore ifuse irecovery libideviceactivation-utils \
+		libimobiledevice-utils libusbmuxd-utils plistutil usb-modeswitch usbids usbutils v4l-utils luci luci-theme-openwrt-2020 \
+		luci-app-ddns kmod-rtw88 kmod-fb-tft-ili9341 kmod-video-core kmod-video-uvc kmod-usb-gadget-filesystem kmod-usb-net-ipheth \
+		kmod-usb-net-rndis kmod-usb-storage-extras kmod-usb2 kmod-sound-core kmod-usb-audio kmod-input-touchscreen-ads7846 \
+		kmod-input-joydev kmod-usb-hid-dragonrise
+endef
+TARGET_DEVICES += i2c_cputools-i6s

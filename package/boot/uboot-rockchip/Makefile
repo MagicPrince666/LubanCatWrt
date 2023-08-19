@@ -83,6 +83,18 @@ define U-Boot/rock-pi-s-rk3308
 	OF_BLOB:=$(1)
 endef
 
+define U-Boot/cputools-i6s-rk3308
+	BUILD_SUBTARGET:=armv8
+	NAME:=CPUTOOLS I6S
+	BUILD_DEVICES:= \
+		cputools-i6s
+	DEPENDS:=+PACKAGE_u-boot-cputools-i6s-rk3308:arm-trusted-firmware-rk3308
+	PKG_BUILD_DEPENDS:=arm-trusted-firmware-rockchip-vendor
+	ATF:=rk3308_bl31_v2.25.elf
+	# DDR:=rk3308_ddr_589MHz_uart2_m1_v2.06.bin
+	OF_BLOB:=$(1)
+endef
+
 define U-Boot/lubancat-zero-n-rk3566
   BUILD_SUBTARGET:=armv8
   NAME:=LubanCat Zero N
@@ -186,6 +198,7 @@ UBOOT_TARGETS := \
   lubancat-zero-n-rk3566 \
   lubancat-zero-w-rk3566 \
   rock-pi-s-rk3308 \
+  cputools-i6s-rk3308 \
   lubancat1-rk3566 \
   lubancat1n-rk3566 \
   lubancat2-rk3568 \
