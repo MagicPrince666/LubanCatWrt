@@ -43,6 +43,12 @@ define Package/arm-trusted-firmware-rk3566
     VARIANT:=rk3566
 endef
 
+define Package/arm-trusted-firmware-rk3308
+    $(Package/arm-trusted-firmware-rockchip-vendor)
+    DEPENDS:=@TARGET_rockchip_armv8
+    VARIANT:=rk3308
+endef
+
 define Package/arm-trusted-firmware-rk3568
     $(Package/arm-trusted-firmware-rockchip-vendor)
     DEPENDS:=@TARGET_rockchip_armv8
@@ -69,6 +75,9 @@ define Build/InstallDev
 	$(CURDIR)/pack-firmware.sh install $(BUILD_VARIANT) '$(PKG_BUILD_DIR)' '$(STAGING_DIR_IMAGE)'
 endef
 
+define Package/arm-trusted-firmware-rk3308/install
+endef
+
 define Package/arm-trusted-firmware-rk3328/install
 endef
 
@@ -84,6 +93,7 @@ endef
 define Package/arm-trusted-firmware-rk3588/install
 endef
 
+$(eval $(call BuildPackage,arm-trusted-firmware-rk3308))
 $(eval $(call BuildPackage,arm-trusted-firmware-rk3328))
 $(eval $(call BuildPackage,arm-trusted-firmware-rk3399))
 $(eval $(call BuildPackage,arm-trusted-firmware-rk3566))

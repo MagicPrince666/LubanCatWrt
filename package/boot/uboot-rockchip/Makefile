@@ -70,6 +70,19 @@ define U-Boot/nanopi-r4s-rk3399
   USE_RKBIN:=1
 endef
 
+# RK3308 boards
+define U-Boot/rock-pi-s-rk3308
+	BUILD_SUBTARGET:=armv8
+	NAME:=Rock Pi S
+	BUILD_DEVICES:= \
+		radxa_rock-pi-s
+	DEPENDS:=+PACKAGE_u-boot-rock-pi-s-rk3308:arm-trusted-firmware-rk3308
+	PKG_BUILD_DEPENDS:=arm-trusted-firmware-rockchip-vendor
+	ATF:=rk3308_bl31_v2.25.elf
+	# DDR:=rk3308_ddr_589MHz_uart2_m1_v2.06.bin
+	OF_BLOB:=$(1)
+endef
+
 define U-Boot/lubancat-zero-n-rk3566
   BUILD_SUBTARGET:=armv8
   NAME:=LubanCat Zero N
@@ -172,6 +185,7 @@ UBOOT_TARGETS := \
   doornet2-rk3399 \
   lubancat-zero-n-rk3566 \
   lubancat-zero-w-rk3566 \
+  rock-pi-s-rk3308 \
   lubancat1-rk3566 \
   lubancat1n-rk3566 \
   lubancat2-rk3568 \
@@ -204,7 +218,14 @@ ifneq ($(USE_RKBIN),)
 	$(STAGING_DIR_IMAGE)/loaderimage --pack --uboot $(PKG_BUILD_DIR)/u-boot-dtb.bin $(PKG_BUILD_DIR)/uboot.img 0x200000
 	$(CP) $(PKG_BUILD_DIR)/uboot.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-uboot.img
 else
-	$(CP) $(PKG_BUILD_DIR)/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
+ifneq ($(OF_BLOB),)
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(OF_BLOB)/uboot.img $(PKG_BUILD_DIR)/uboot.img
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(OF_BLOB)/idbloader.bin $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.bin
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(OF_BLOB)/trust.bin $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-trust.bin
+	$(CP) $(PKG_BUILD_DIR)/uboot.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-uboot.img
+else
+  $(CP) $(PKG_BUILD_DIR)/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
+endif
 	$(CP) $(PKG_BUILD_DIR)/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
 endif
 endef

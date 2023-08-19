@@ -1,0 +1,12 @@
+Index: u-boot-2022.07/arch/arm/dts/Makefile
+===================================================================
+--- u-boot-2022.07.orig/arch/arm/dts/Makefile
++++ u-boot-2022.07/arch/arm/dts/Makefile
+@@ -119,6 +119,7 @@ dtb-$(CONFIG_ROCKCHIP_RK3288) += \
+ 	rk3288-vyasa.dtb
+ 
+ dtb-$(CONFIG_ROCKCHIP_RK3308) += \
++	rk3308-rock-pi-s.dtb \
+ 	rk3308-evb.dtb \
+ 	rk3308-roc-cc.dtb
+ 

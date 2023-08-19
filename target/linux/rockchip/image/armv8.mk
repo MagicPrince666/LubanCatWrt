@@ -84,3 +84,19 @@ define Device/embedfire_lubancat2n
   DEVICE_PACKAGES := kmod-r8125 kmod-ata-ahci kmod-ata-ahci-platform kmod-ata-core
 endef
 TARGET_DEVICES += embedfire_lubancat2n
+
+define Device/radxa_rock-pi-s
+	DEVICE_VENDOR := Radxa
+	DEVICE_MODEL := Rock Pi S
+	SOC := rk3308
+	SUPPORTED_DEVICES := radxa,rockpis
+	UBOOT_DEVICE_NAME := rock-pi-s-rk3308
+	IMAGE/sysupgrade.img.gz := boot-common | boot-script rock-pi-s | rockpis-img | gzip | append-metadata
+	# CONFIG_TARGET_ROOTFS_PARTSIZE := 900
+	DEVICE_PACKAGES:=bluez-tools rtk_hciattach ideviceinstaller idevicerestore ifuse irecovery libideviceactivation-utils \
+		libimobiledevice-utils libusbmuxd-utils plistutil usb-modeswitch usbids usbutils v4l-utils luci luci-theme-openwrt-2020 \
+		luci-app-ddns kmod-rtw88 kmod-fb-tft-ili9341 kmod-video-core kmod-video-uvc kmod-usb-gadget-filesystem kmod-usb-net-ipheth \
+		kmod-usb-net-rndis kmod-usb-storage-extras kmod-usb2 kmod-sound-core kmod-usb-audio kmod-input-touchscreen-ads7846 \
+		kmod-input-joydev kmod-usb-hid-dragonrise kmod-inv-mpu6050-i2c
+endef
+TARGET_DEVICES += radxa_rock-pi-s
