@@ -365,6 +365,22 @@ endef
 
 $(eval $(call KernelPackage,drm-ili9341))
 
+define KernelPackage/sitronix-st7701
+	SUBMENU:=$(VIDEO_MENU)
+	TITLE:=Sitronix ST7701 panel driver
+	DEPENDS:=+kmod-fb-tft +kmod-drm +kmod-drm-kms-helper +kmod-drm-dma-helper +kmod-drm-mipi-dbi +kmod-backlight
+	KCONFIG:= CONFIG_OF\
+    CONFIG_DRM_PANEL_SITRONIX_ST7701
+	FILES:=$(LINUX_DIR)/drivers/gpu/drm/panel/panel-sitronix-st7701.ko
+	AUTOLOAD:=$(call AutoLoad,09,panel-sitronix-st7701)
+endef
+
+define KernelPackage/sitronix-st7701/description
+	Sitronix ST7701 panel driver
+endef
+
+$(eval $(call KernelPackage,sitronix-st7701))
+
 define KernelPackage/drm-amdgpu
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=AMDGPU DRM support

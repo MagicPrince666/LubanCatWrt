@@ -224,6 +224,52 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&rtc_32k>;
 
+	sdmmc {
+		sdmmc_clk: sdmmc-clk {
+			rockchip,pins =
+				<4 RK_PD5 1 &pcfg_pull_none_4ma>;
+		};
+
+		sdmmc_cmd: sdmmc-cmd {
+			rockchip,pins =
+				<4 RK_PD4 1 &pcfg_pull_up_4ma>;
+		};
+
+		sdmmc_det: sdmmc-det {
+			rockchip,pins =
+				<0 RK_PA3 1 &pcfg_pull_up_4ma>;
+		};
+
+		sdmmc_pwren: sdmmc-pwren {
+			rockchip,pins =
+				<4 RK_PD6 1 &pcfg_pull_none_4ma>;
+		};
+
+		sdmmc_bus1: sdmmc-bus1 {
+			rockchip,pins =
+				<4 RK_PD0 1 &pcfg_pull_up_4ma>;
+		};
+
+		sdmmc_bus4: sdmmc-bus4 {
+			rockchip,pins =
+				<4 RK_PD0 1 &pcfg_pull_up_4ma>,
+				<4 RK_PD1 1 &pcfg_pull_up_4ma>,
+				<4 RK_PD2 1 &pcfg_pull_up_4ma>,
+				<4 RK_PD3 1 &pcfg_pull_up_4ma>;
+		};
+
+		sdmmc_bus8: sdmmc-bus8 {
+			rockchip,pins =
+				<4 RK_PD0 0 &pcfg_pull_up_4ma>,
+				<4 RK_PD1 0 &pcfg_pull_up_4ma>,
+				<4 RK_PD2 0 &pcfg_pull_up_4ma>,
+				<4 RK_PD3 0 &pcfg_pull_up_4ma>,
+				<4 RK_PD4 0 &pcfg_pull_up_4ma>,
+				<4 RK_PD5 0 &pcfg_pull_up_4ma>,
+				<4 RK_PD6 0 &pcfg_pull_up_4ma>;
+		};
+	};
+
 	leds {
 		green_led_gio: green-led-gpio {
 			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
@@ -264,22 +310,6 @@
 			rockchip,pins =
 				<2 RK_PA1 1 &pcfg_pull_up>,
 				<2 RK_PA0 1 &pcfg_pull_up>;
-		};
-	};
-
-	uart1 {
-		uart1_xfer: uart1-xfer {
-			rockchip,pins =
-				<1 RK_PD1 1 &pcfg_pull_up>,
-				<1 RK_PD0 1 &pcfg_pull_up>;
-		};
-	};
-
-	uart2-m0 {
-		uart2m0_xfer: uart2m0-xfer {
-			rockchip,pins =
-				<1 RK_PC7 2 &pcfg_pull_up>,
-				<1 RK_PC6 2 &pcfg_pull_up>;
 		};
 	};
 
@@ -347,6 +377,28 @@
 		spi1_mosi: spi1-mosi {
 			rockchip,pins =
 				<3 RK_PB4 3 &pcfg_pull_up_4ma>;
+		};
+	};
+
+	spi2 {
+		spi2_clk: spi2-clk {
+			rockchip,pins =
+				<1 RK_PD0 3 &pcfg_pull_up_4ma>;
+		};
+
+		spi2_csn0: spi2-csn0 {
+			rockchip,pins =
+				<1 RK_PD1 3 &pcfg_pull_up_4ma>;
+		};
+
+		spi2_miso: spi2-miso {
+			rockchip,pins =
+				<1 RK_PC6 3 &pcfg_pull_up_4ma>;
+		};
+
+		spi2_mosi: spi2-mosi {
+			rockchip,pins =
+				<1 RK_PC7 3 &pcfg_pull_up_4ma>;
 		};
 	};
 
@@ -423,6 +475,9 @@
 };
 
 &sdmmc {
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_det &sdmmc_bus8>;
+	bus-width = <8>;
 	cap-sd-highspeed;
 	status = "okay";
 };
@@ -446,20 +501,14 @@
 };
 
 &uart1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart1_xfer>;
-	status = "okay";
+	status = "disabled";
 };
 
 &uart2 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart2m0_xfer>;
-	status = "okay";
+	status = "disabled";
 };
 
 &uart3 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart3_xfer>;
 	status = "disabled";
 };
 
@@ -479,7 +528,7 @@
 };
 
 &spi1 {
-	status = "okay";
+	status = "disabled";
 	#address-cells = <1>;
 	#size-cells = <0>;
     pinctrl-names = "default";
@@ -505,28 +554,6 @@
 		debug = <0>;
 		backlight = <&backlight>;
 	};
-	panel: display@0 {
-		compatible = "st,sf-tc240t-9370-t",
-						"ilitek,ili9341";
-		reg = <0>;
-		spi-3wire;
-		spi-max-frequency = <10000000>;
-		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
-		port {
-			panel_in: endpoint {
-				remote-endpoint = <&display_out>;
-			};
-		};
-	};
-	display@1{
-		compatible = "adafruit,yx240qv29", "ilitek,ili9341";
-		reg = <1>;
-		spi-max-frequency = <10000000>;
-		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_LOW>;
-		rotation = <90>;
-		backlight = <&backlight>;
-	};
 */
 	display@0{
 		compatible = "adafruit,yx240qv29", "ilitek,ili9341";
@@ -536,7 +563,7 @@
 		spi-max-frequency = <10000000>;
 		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_LOW>;
-		rotation = <270>;
+		rotate = <90>;
 		bgr;
 		fps = <30>;
 		buswidth = <8>;
@@ -578,7 +605,21 @@
 };
 
 &spi2 {
-	status = "disabled";
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi2_clk &spi2_csn0 &spi2_miso &spi2_mosi>;
+
+	panel@0 {
+		compatible = "techstar,ts8550b", "sitronix,st7701";
+		reg = <0>;
+		spi-max-frequency = <8000000>;
+		VCC-supply = <&vcc_io>;
+		IOVCC-supply = <&vcc_io>;
+		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_HIGH>; /* LCD-RST: PD24 */
+		backlight = <&backlight>;
+	};
 };
 
 &usb_host_ehci {
