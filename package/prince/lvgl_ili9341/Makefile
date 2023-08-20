@@ -18,12 +18,12 @@ PKG_LICENSE:=MIT
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-  SECTION:=libs
-  CATEGORY:=Libraries
+  SECTION:=utils
+	CATEGORY:=Utilities
   TITLE:=LVGL for frame buffer device
   URL:=https://github.com/lvgl/lv_port_linux_frame_buffer.git
   SUBMENU:=Prince
-  DEPENDS:= +tslib
+  DEPENDS:=
   VARIANT:=
 endef
 
