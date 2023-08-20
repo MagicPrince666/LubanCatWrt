@@ -1,0 +1,19 @@
+Index: lvgl_ili9341-master/lv_drivers/display/fbdev.c
+===================================================================
+--- lvgl_ili9341-master.orig/lv_drivers/display/fbdev.c
++++ lvgl_ili9341-master/lv_drivers/display/fbdev.c
+@@ -99,10 +99,10 @@ void fbdev_init(void)
+     LV_LOG_INFO("The framebuffer device was opened successfully");
+ 
+     // Make sure that the display is on.
+-    if (ioctl(fbfd, FBIOBLANK, FB_BLANK_UNBLANK) != 0) {
+-        perror("ioctl(FBIOBLANK)");
+-        return;
+-    }
++    //if (ioctl(fbfd, FBIOBLANK, FB_BLANK_UNBLANK) != 0) {
++    //    perror("ioctl(FBIOBLANK)");
++    //    return;
++    //}
+ 
+ #if USE_BSD_FBDEV
+     struct fbtype fb;
