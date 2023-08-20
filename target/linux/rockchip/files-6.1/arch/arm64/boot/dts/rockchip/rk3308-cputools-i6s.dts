@@ -194,7 +194,7 @@
 	snps,reset-active-low;
 	snps,reset-delays-us = <0 50000 50000>;
 	local-mac-address = [a4 51 29 00 00 08];
-	status = "okay";
+	status = "disabled";
 };
 
 &i2c1 {
@@ -205,7 +205,7 @@
 	mpu6050@68 {
 		compatible = "invensense,mpu6050";
 		reg = <0x68>;
-		status = "okay";
+		status = "disabled";
 		interrupt-parent = <&gpio2>;
 		interrupts = <RK_PB0 IRQ_TYPE_EDGE_RISING>; //GPIO2_B0
 		mount-matrix = "-0.984807753012208",  /* x0 */
@@ -528,33 +528,14 @@
 };
 
 &spi1 {
-	status = "disabled";
 	#address-cells = <1>;
 	#size-cells = <0>;
     pinctrl-names = "default";
     pinctrl-0 = <&spi1_csn0 &spi1_csn1 &spi1_clk &spi1_miso &spi1_mosi>;
 	spi-num-chipselects = <2>;
 	cs-gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_HIGH>, <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
-    status = "okay";
+    status = "disabled";
 
-/*
-	ili9341@0 {
-		compatible = "ilitek,ili9341";
-		reg = <0>;
-		status = "okay";
-		pinctrl-names = "default";
-		pinctrl-0 = <&tft_gpio_pins>;
-		spi-max-frequency = <50000000>;
-		rotate = <90>;
-		bgr;
-		fps = <30>;
-		buswidth = <8>;
-		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_LOW>; 	// GPIO2_C0
-		dc-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;	// GPIO2_B7
-		debug = <0>;
-		backlight = <&backlight>;
-	};
-*/
 	display@0{
 		compatible = "adafruit,yx240qv29", "ilitek,ili9341";
 		pinctrl-names = "default";
@@ -568,6 +549,7 @@
 		fps = <30>;
 		buswidth = <8>;
 		backlight = <&backlight>;
+		status = "disabled";
 	};
 
 	tsc2046@1 {
@@ -588,7 +570,7 @@
 		ti,x-plate-ohms = /bits/ 16 <40>;
 		ti,pressure-max = /bits/ 16 <255>;
 		wakeup-source;
-		status = "okay";
+		status = "disabled";
 	};
 
 	rc522@3{
@@ -605,11 +587,11 @@
 };
 
 &spi2 {
-	status = "okay";
 	#address-cells = <1>;
 	#size-cells = <0>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&spi2_clk &spi2_csn0 &spi2_miso &spi2_mosi>;
+	status = "okay";
 
 	panel@0 {
 		compatible = "techstar,ts8550b", "sitronix,st7701";
@@ -617,8 +599,9 @@
 		spi-max-frequency = <8000000>;
 		VCC-supply = <&vcc_io>;
 		IOVCC-supply = <&vcc_io>;
-		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_HIGH>; /* LCD-RST: PD24 */
+		reset-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_LOW>; /* LCD-RST: PD24 */
 		backlight = <&backlight>;
+		status = "okay";
 	};
 };
 
