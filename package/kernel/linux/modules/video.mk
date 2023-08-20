@@ -369,7 +369,10 @@ define KernelPackage/sitronix-st7701
 	SUBMENU:=$(VIDEO_MENU)
 	TITLE:=Sitronix ST7701 panel driver
 	DEPENDS:=+kmod-fb-tft +kmod-drm +kmod-drm-kms-helper +kmod-drm-dma-helper +kmod-drm-mipi-dbi +kmod-backlight
-	KCONFIG:= CONFIG_OF\
+	KCONFIG:=
+    CONFIG_DRM_PANEL_SIMPLE \
+    CONFIG_DRM_PANEL=y \
+    CONFIG_VIDEOMODE_HELPERS=y \
     CONFIG_DRM_PANEL_SITRONIX_ST7701
 	FILES:=$(LINUX_DIR)/drivers/gpu/drm/panel/panel-sitronix-st7701.ko
 	AUTOLOAD:=$(call AutoLoad,09,panel-sitronix-st7701)
