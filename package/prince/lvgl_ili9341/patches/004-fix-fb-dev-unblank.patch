@@ -17,3 +17,16 @@ Index: lvgl_ili9341-master/lv_drivers/display/fbdev.c
  
  #if USE_BSD_FBDEV
      struct fbtype fb;
+Index: lvgl_ili9341-master/lv_drv_conf.h
+===================================================================
+--- lvgl_ili9341-master.orig/lv_drv_conf.h
++++ lvgl_ili9341-master/lv_drv_conf.h
+@@ -447,7 +447,7 @@
+ #endif
+ 
+ #if USE_EVDEV || USE_BSD_EVDEV
+-#  define EVDEV_NAME   "/dev/input/event10"        /*You can use the "evtest" Linux tool to get the list of devices and test them*/
++#  define EVDEV_NAME   "/dev/input/event0"        /*You can use the "evtest" Linux tool to get the list of devices and test them*/
+ #  define EVDEV_SWAP_AXES         0               /*Swap the x and y axes of the touchscreen*/
+ 
+ #  define EVDEV_CALIBRATE         0               /*Scale and offset the touchscreen coordinates by using maximum and minimum values for each axis*/
