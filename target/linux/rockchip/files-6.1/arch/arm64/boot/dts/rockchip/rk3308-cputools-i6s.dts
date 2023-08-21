@@ -165,7 +165,7 @@
 &i2c1 {
 	status = "okay";
 	pinctrl-names = "default";
-    pinctrl-0 = <&i2c1_xfer>;
+    pinctrl-0 = <&i2c1_pins>;
 
 	touch: touchscreen@5d {
 		compatible = "goodix,gt911";
@@ -387,11 +387,7 @@
 	};
 
 	gt911 {
-		// <0 RK_PB0 1 &pcfg_pull_up>, // tp_int
-		// <0 RK_PC0 1 &pcfg_pull_up>, // tp_reset
-		// <0 RK_PB3 1 &pcfg_pull_up>, // tp sda i2c1_sda
-		// <0 RK_PB4 1 &pcfg_pull_up>, // tp scl i2c1_scl
-		i2c1_xfer: i2c1-xfer {
+		i2c1_pins: i2c1-pins {
 			rockchip,pins =
 				<0 RK_PB3 1 &pcfg_pull_none_smt>,
 				<0 RK_PB4 1 &pcfg_pull_none_smt>;
