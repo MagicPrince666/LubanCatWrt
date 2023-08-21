@@ -175,6 +175,22 @@ endef
 
 $(eval $(call KernelPackage,input-touchscreen-ads7846))
 
+define KernelPackage/input-touchscreen-goodix
+  SUBMENU:=$(INPUT_MODULES_MENU)
+  TITLE:=Goodix I2C touchscreen
+  DEPENDS:=+kmod-hwmon-core +kmod-i2c-core +kmod-input-evdev
+  KCONFIG:= \
+	CONFIG_INPUT_TOUCHSCREEN=y \
+	CONFIG_TOUCHSCREEN_GOODIX
+  FILES:=$(LINUX_DIR)/drivers/input/touchscreen/goodix_ts.ko
+  AUTOLOAD:=$(call AutoProbe,goodix_ts)
+endef
+
+define KernelPackage/input-touchscreen-goodix/description
+  Kernel module for Goodix I2C touchscreen
+endef
+
+$(eval $(call KernelPackage,input-touchscreen-goodix))
 
 define KernelPackage/input-touchscreen-edt-ft5x06
   SUBMENU:=$(INPUT_MODULES_MENU)
