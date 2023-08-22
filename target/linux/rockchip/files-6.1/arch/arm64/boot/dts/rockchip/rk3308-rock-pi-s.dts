@@ -53,7 +53,7 @@
 
 		button1 {
 			label = "button1";
-			linux,code = <KEY_POWER>;
+			linux,code = <BTN_DPAD_LEFT>;
 			gpios = <&gpio2 RK_PA6 GPIO_ACTIVE_LOW>;
 			// interrupt-parent = <&gpio2>;
 			// interrupts = <RK_PA6 IRQ_TYPE_EDGE_BOTH>;
@@ -63,7 +63,7 @@
 
 		button2 {
 			label = "button2";
-			linux,code = <KEY_RESTART>;
+			linux,code = <BTN_WEST>;
 			gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_LOW>;
 			// interrupt-parent = <&gpio2>;
 			// interrupts = <RK_PA7 IRQ_TYPE_EDGE_BOTH>;
@@ -73,7 +73,7 @@
 
 		button3 {
 			label = "button3";
-			linux,code = <KEY_WPS_BUTTON>;
+			linux,code = <BTN_DPAD_RIGHT>;
 			gpios = <&gpio2 RK_PB1 GPIO_ACTIVE_LOW>;
 			// interrupt-parent = <&gpio2>;
 			// interrupts = <RK_PB1 IRQ_TYPE_EDGE_BOTH>;
