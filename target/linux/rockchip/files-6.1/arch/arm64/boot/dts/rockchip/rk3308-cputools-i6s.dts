@@ -45,7 +45,7 @@
 		};
 	};
 
-	gpio-keys {
+	gpio_keys: gpio-keys {
 		compatible = "gpio-keys";
 		autorepeat;
 	};
@@ -88,7 +88,7 @@
 			240 241 242 243 244 245 246 247
 			248 249 250 251 252 253 254 255
 		>;
-		default-brightness-level = <200>;
+		default-brightness-level = <128>;
         status = "okay";
     };
 
@@ -96,8 +96,32 @@
 		compatible = "mmc-pwrseq-simple";
 		pinctrl-0 = <&wifi_enable_h>;
 		pinctrl-names = "default";
-		reset-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>;
 	};
+
+	tft_show: tft-show {
+		compatible = "spi-gpio";
+		#address-cells = <0x1>;
+		#size-cells = <0x0>;
+		pinctrl-0 = <&spi_gpio_pins &reset_pins>;
+		pinctrl-names = "default";
+
+		cs-gpios = <&gpio2 RK_PB5 GPIO_ACTIVE_LOW>;
+		sck-gpios = <&gpio2 RK_PA6 GPIO_ACTIVE_LOW>;
+		mosi-gpios = <&gpio2 RK_PB3 GPIO_ACTIVE_LOW>;
+		num-chipselects = <1>;
+
+		panel@0 {
+			compatible = "techstar,ts8550b", "sitronix,st7701";
+			reg = <0>;
+			spi-max-frequency = <8000000>;
+			VCC-supply = <&vcc_io>;
+			IOVCC-supply = <&vcc_io>;
+			reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>; /* LCD-RST:  */
+			backlight = <&backlight>;
+			status = "okay";
+		};
+    };
 
 	vcc_1v8: vcc-1v8 {
 		compatible = "regulator-fixed";
@@ -187,12 +211,6 @@
 };
 
 &gmac {
-	clock_in_out = "output";
-	phy-supply = <&vcc_io>;
-	snps,reset-gpio = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>;
-	snps,reset-active-low;
-	snps,reset-delays-us = <0 50000 50000>;
-	local-mac-address = [a4 51 29 00 00 08];
 	status = "disabled";
 };
 
@@ -284,11 +302,9 @@
 
 	sdio-pwrseq {
 		wifi_enable_h: wifi-enable-h {
-			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		wifi_host_wake: wifi-host-wake {
-			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_down>;
+			rockchip,pins = 
+				<4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>,
+				<0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -297,14 +313,6 @@
 			rockchip,pins =
 				<2 RK_PA1 1 &pcfg_pull_up>,
 				<2 RK_PA0 1 &pcfg_pull_up>;
-		};
-	};
-
-	uart2 {
-		uart2_xfer: uart2-xfer {
-			rockchip,pins =
-				<1 RK_PC6 2 &pcfg_pull_up>,
-				<1 RK_PC7 2 &pcfg_pull_up>;
 		};
 	};
 
@@ -324,6 +332,16 @@
 			rockchip,pins =
 				<4 RK_PA7 1 &pcfg_pull_none>;
 		};
+	};
+
+	bluetooth {
+		bluetooth_pins: bluetooth-rts {
+			rockchip,pins =
+				<4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>,
+				<4 RK_PB4 RK_FUNC_GPIO &pcfg_pull_none>,
+				<4 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
 	};
 
 	pwm1 {
@@ -360,28 +378,6 @@
 		};
 	};
 
-	spi2 {
-		spi2_clk: spi2-clk {
-			rockchip,pins =
-				<1 RK_PD0 3 &pcfg_pull_up_4ma>;
-		};
-
-		spi2_csn0: spi2-csn0 {
-			rockchip,pins =
-				<1 RK_PD1 3 &pcfg_pull_up_4ma>;
-		};
-
-		spi2_miso: spi2-miso {
-			rockchip,pins =
-				<1 RK_PC6 3 &pcfg_pull_up_4ma>;
-		};
-
-		spi2_mosi: spi2-mosi {
-			rockchip,pins =
-				<1 RK_PC7 3 &pcfg_pull_up_4ma>;
-		};
-	};
-
 	lcd_pins {
 		lcd_pins: lcd-pins {
 			rockchip,pins =
@@ -389,10 +385,6 @@
 				<2 RK_PB7 1 &pcfg_pull_up>, // R6
 				<2 RK_PB2 1 &pcfg_pull_up>, // R5
 				<2 RK_PB1 1 &pcfg_pull_up>, // R4
-				<2 RK_PB5 1 &pcfg_pull_up>, // cs
-				<2 RK_PA6 1 &pcfg_pull_up>, // scl
-				<2 RK_PB3 1 &pcfg_pull_up>, // sdi
-				<0 RK_PC4 1 &pcfg_pull_up>, // reset
 				<1 RK_PB6 1 &pcfg_pull_up>, // LCDC_D10 B2
 				<1 RK_PB5 1 &pcfg_pull_up>, // LCDC_D9 B1
 				<1 RK_PB4 1 &pcfg_pull_up>, // LCDC_D8 B0
@@ -417,6 +409,20 @@
 				<1 RK_PC1 1 &pcfg_pull_up>, // LCDC_D13 B5
 				<1 RK_PC0 1 &pcfg_pull_up>, // LCDC_D12 B4
 				<1 RK_PB7 1 &pcfg_pull_up>; // LCDC_D11 B3
+		};
+	};
+
+	reb_tft {
+		spi_gpio_pins: spi_gpio-pins {
+			rockchip,pins =
+				<2 RK_PB5 RK_FUNC_GPIO &pcfg_pull_up>, // cs
+				<2 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>, // scl
+				<2 RK_PB3 RK_FUNC_GPIO &pcfg_pull_up>; // sdi
+		};
+
+		reset_pins: reset-pins {
+			rockchip,pins =
+				<0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>; // reset
 		};
 	};
 
@@ -458,6 +464,8 @@
 &sdio {
 	#address-cells = <1>;
 	#size-cells = <0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdio_bus4 &sdio_cmd &sdio_clk>;
 	cap-sd-highspeed;
 	cap-sdio-irq;
 	keep-power-in-suspend;
@@ -508,15 +516,17 @@
 
 &uart4 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&uart4_xfer &uart4_cts &uart4_rts>;
+	pinctrl-0 = <&uart4_xfer &uart4_rts>;
 	uart-has-rtscts;
 	status = "okay";
 
 	bluetooth {
 		compatible = "realtek,rtl8723bs-bt";
-		enable-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_HIGH>;
-		device-wake-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
-		host-wake-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&bluetooth_pins>;
+		enable-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
+		device-wake-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_HIGH>;
+		host-wake-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_HIGH>;
 		max-speed = <1500000>;
 	};
 };
@@ -528,24 +538,19 @@
     pinctrl-0 = <&spi1_csn0 &spi1_csn1 &spi1_clk &spi1_miso &spi1_mosi>;
 	spi-num-chipselects = <2>;
 	cs-gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_HIGH>, <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
-    status = "disabled";
-};
+    status = "okay";
 
-&spi2 {
-	#address-cells = <1>;
-	#size-cells = <0>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&spi2_clk &spi2_csn0 &spi2_miso &spi2_mosi>;
-	status = "okay";
-
-	panel@0 {
-		compatible = "techstar,ts8550b", "sitronix,st7701";
+	spidev@0 {
+		compatible = "rohm,dh2228fv";
+		spi-max-frequency = <30000000>;
 		reg = <0>;
-		spi-max-frequency = <8000000>;
-		VCC-supply = <&vcc_io>;
-		IOVCC-supply = <&vcc_io>;
-		reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>; /* LCD-RST:  */
-		backlight = <&backlight>;
+		status = "okay";
+	};
+
+	spidev@1 {
+		compatible = "rohm,dh2228fv";
+		spi-max-frequency = <30000000>;
+		reg = <1>;
 		status = "okay";
 	};
 };

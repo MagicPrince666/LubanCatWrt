@@ -465,7 +465,7 @@
 
 &uart4 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&uart4_xfer &uart4_cts>;
+	pinctrl-0 = <&uart4_xfer &uart4_rts>;
 	uart-has-rtscts;
 	status = "okay";
 
