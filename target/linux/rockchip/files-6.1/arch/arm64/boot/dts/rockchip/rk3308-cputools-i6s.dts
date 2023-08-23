@@ -89,7 +89,8 @@
 		compatible = "mmc-pwrseq-simple";
 		pinctrl-0 = <&wifi_enable_h>;
 		pinctrl-names = "default";
-		reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>,
+			<&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;
 	};
 
 	tft_show: tft-show {
@@ -468,6 +469,11 @@
 	non-removable;
 	sd-uhs-sdr104;
 	status = "okay";
+	rtl8821@0 {
+		compatible = "realtek,rtl8821cs";
+		reg = <0>;
+		bus-width = <4>;
+	};
 };
 
 &sdmmc {
