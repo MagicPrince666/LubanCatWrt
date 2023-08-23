@@ -105,13 +105,29 @@
 		mosi-gpios = <&gpio2 RK_PB3 GPIO_ACTIVE_LOW>;
 		num-chipselects = <1>;
 
+		st7701s@0 {
+			compatible = "sitronix,st7701s";
+			reg = <0>;
+			spi-max-frequency =<5000>;        
+			rotate = <90>;                    
+			spi-cpol;
+			spi-cpha;
+			rgb;                           
+			fps = <30>;                      
+			buswidth = <9>;                   
+			reset-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>; 
+			debug = <1>;
+			backlight = <&backlight>;
+			status = "okay";
+		};
+
 		panel@0 {
 			compatible = "techstar,ts8550b", "sitronix,st7701";
 			reg = <0>;
 			spi-max-frequency = <8000000>;
 			reset-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>; // LCD-RST
 			backlight = <&backlight>;
-			status = "okay";
+			status = "disabled";
 		};
     };
 
@@ -222,7 +238,7 @@
 		interrupt-parent = <&gpio0>;
 		interrupts = <RK_PB0 IRQ_TYPE_EDGE_FALLING>;
 		irq-gpios = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>;
 		status = "okay";
 	};
 };
