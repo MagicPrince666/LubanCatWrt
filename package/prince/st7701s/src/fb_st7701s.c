@@ -32,55 +32,71 @@ enum st7701s_command {
 #define MADCTL_MX BIT(6) /* bitmask for column address order */
 #define MADCTL_MY BIT(7) /* bitmask for page address order */
 
+/* 60Hz for 16.6ms, configured as 2*16.6ms */
+#define PANEL_TE_TIMEOUT_MS  33
+
+static struct completion panel_te; /* completion for panel TE line */
+static int irq_te; /* Linux IRQ for LCD TE line */
+
+static irqreturn_t panel_te_handler(int irq, void *data)
+{
+	complete(&panel_te);
+	return IRQ_HANDLED;
+}
+
+/*
+ * init_tearing_effect_line() - init tearing effect line.
+ * @par: FBTFT parameter object.
+ *
+ * Return: 0 on success, or a negative error code otherwise.
+ */
+static int init_tearing_effect_line(struct fbtft_par *par)
+{
+	struct device *dev = par->info->device;
+	struct gpio_desc *te;
+	int rc, irq;
+
+	te = gpiod_get_optional(dev, "te", GPIOD_IN);
+	if (IS_ERR(te))
+		return dev_err_probe(dev, PTR_ERR(te), "Failed to request te GPIO\n");
+
+	/* if te is NULL, indicating no configuration, directly return success */
+	if (!te) {
+		irq_te = 0;
+		return 0;
+	}
+
+	irq = gpiod_to_irq(te);
+
+	/* GPIO is locked as an IRQ, we may drop the reference */
+	gpiod_put(te);
+
+	if (irq < 0)
+		return irq;
+
+	irq_te = irq;
+	init_completion(&panel_te);
+
+	/* The effective state is high and lasts no more than 1000 microseconds */
+	rc = devm_request_irq(dev, irq_te, panel_te_handler,
+			      IRQF_TRIGGER_RISING, "TE_GPIO", par);
+	if (rc)
+		return dev_err_probe(dev, rc, "TE IRQ request failed.\n");
+
+	disable_irq_nosync(irq_te);
+
+	return 0;
+}
 
 static int init_display(struct fbtft_par *par)
 {
-#if 0
-	/* turn off sleep mode */
-	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
-	mdelay(120);
+	int rc;
 
-	/* set pixel format to RGB-565 */
-	write_reg(par, MIPI_DCS_SET_PIXEL_FORMAT, MIPI_DCS_PIXEL_FMT_16BIT);
+	par->fbtftops.reset(par);
 
-	write_reg(par, PORCTRL, 0x08, 0x08, 0x00, 0x22, 0x22);
-
-	/*
-	 * VGH = 13.26V
-	 * VGL = -10.43V
-	 */
-	write_reg(par, GCTRL, 0x35);
-
-	/*
-	 * VDV and VRH register values come from command write
-	 * (instead of NVM)
-	 */
-	write_reg(par, VDVVRHEN, 0x01, 0xFF);
-
-	/*
-	 * VAP =  4.1V + (VCOM + VCOM offset + 0.5 * VDV)
-	 * VAN = -4.1V + (VCOM + VCOM offset + 0.5 * VDV)
-	 */
-	write_reg(par, VRHS, 0x0B);
-
-	/* VDV = 0V */
-	write_reg(par, VDVS, 0x20);
-
-	/* VCOM = 0.9V */
-	write_reg(par, VCOMS, 0x20);
-
-	/* VCOM offset = 0V */
-	write_reg(par, VCMOFSET, 0x20);
-
-	/*
-	 * AVDD = 6.8V
-	 * AVCL = -4.8V
-	 * VDS = 2.3V
-	 */
-	write_reg(par, PWCTRL1, 0xA4, 0xA1);
-
-	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
-#endif 
+	rc = init_tearing_effect_line(par);
+	if (rc)
+		return rc;
 	par->fbtftops.reset(par);
 	write_reg(par, 0xFF, 0x77, 0x01, 0x00, 0x00, 0x13);
 	write_reg(par, 0xEF, 0x08);
@@ -88,7 +104,6 @@ static int init_display(struct fbtft_par *par)
 	write_reg(par, 0xC0, 0x3B, 0x00);
 	write_reg(par, 0xC1, 0x0D, 0x02);
 	write_reg(par, 0xC2, 0x21, 0x08);
-	.................
 	return 0;
 }
 
@@ -198,35 +213,63 @@ static int blank(struct fbtft_par *par, bool on)
 	return 0;
 }
 
-static void write_register(struct fbtft_par *par, int len, ...)
+/*
+ * write_vmem() - write data to display.
+ * @par: FBTFT parameter object.
+ * @offset: offset from screen_buffer.
+ * @len: the length of data to be writte.
+ *
+ * Return: 0 on success, or a negative error code otherwise.
+ */
+static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
 {
-	va_list args;
-	int i;
+	struct device *dev = par->info->device;
+	int ret;
 
-	va_start(args, len);
+	if (irq_te) {
+		enable_irq(irq_te);
+		reinit_completion(&panel_te);
+		ret = wait_for_completion_timeout(&panel_te,
+						  msecs_to_jiffies(PANEL_TE_TIMEOUT_MS));
+		if (ret == 0)
+			dev_err(dev, "wait panel TE timeout\n");
 
-	for (i = 0; i < len; i++)
-		par->buf[i] = va_arg(args, unsigned int);
+		disable_irq(irq_te);
+	}
 
-	/* keep DC low for all command bytes to transfer */
-	fbtft_write_spi_emulate_9(par, par->buf, len, 0);
+	switch (par->pdata->display.buswidth) {
+	case 8:
+		ret = fbtft_write_vmem16_bus8(par, offset, len);
+		break;
+	case 9:
+		ret = fbtft_write_vmem16_bus9(par, offset, len);
+		break;
+	case 16:
+		ret = fbtft_write_vmem16_bus16(par, offset, len);
+		break;
+	default:
+		dev_err(dev, "Unsupported buswidth %d\n",
+			par->pdata->display.buswidth);
+		ret = 0;
+		break;
+	}
 
-	va_end(args);
+	return ret;
 }
 
 static struct fbtft_display display = {
 	.regwidth = 8,
-	.width = 480,
+	.width = 800,
 	.height = 480,
 	.gamma_num = 2,
 	.gamma_len = 14,
 	.gamma = DEFAULT_GAMMA,
 	.fbtftops = {
 		.init_display = init_display,
+		.write_vmem = write_vmem,
 		.set_var = set_var,
 		.set_gamma = set_gamma,
 		.blank = blank,
-		.write_reg = write_register,
 	},
 };
 
@@ -236,3 +279,4 @@ MODULE_ALIAS("spi:" DRVNAME);
 MODULE_ALIAS("platform:" DRVNAME);
 MODULE_ALIAS("spi:st7701s");
 MODULE_ALIAS("platform:st7701s");
+MODULE_LICENSE("GPL");
