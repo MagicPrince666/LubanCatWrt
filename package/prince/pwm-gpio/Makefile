@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
-PKG_NAME:=fb_st7701s
+PKG_NAME:=pwm-gpio
 
 PKG_REV:=huangliquan
 PKG_VERSION:=$(PKG_REV)
@@ -20,14 +20,14 @@ include $(INCLUDE_DIR)/package.mk
 
 define KernelPackage/$(PKG_NAME)
   SUBMENU:=Prince Modules
-  TITLE:=Sitronix ST7701S fb driver
-  DEPENDS:=+kmod-fb-tft
-  FILES:=$(PKG_BUILD_DIR)/fb_st7701s.ko
-  AUTOLOAD:=$(call AutoLoad,50,fb_st7701s)
+  TITLE:=gpio simulation pwm ouput
+  FILES:=$(PKG_BUILD_DIR)/pwm-gpio.ko
+  # AUTOLOAD:=$(call AutoProbe,50,pwm-gpio)
+  AUTOLOAD:=$(call AutoLoad,50,pwm-gpio)
 endef
 
 define KernelPackage/$(PKG_NAME)/description
- Sitronix ST7701S fb driver
+ gpio simulation pwm ouput
 endef
 
 define KernelPackage/$(PKG_NAME)/config
