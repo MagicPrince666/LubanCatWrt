@@ -216,10 +216,10 @@
 };
 
 &i2c1 {
-	clock-frequency = <400000>;
+	compatible = "rockchip,rk3399-i2c";
+	status = "okay";
 	pinctrl-names = "default";
     pinctrl-0 = <&i2c1_xfer>;
-	status = "okay";
 
 	touchscreen@5d {
 		compatible = "goodix,gt911";
@@ -230,6 +230,9 @@
 		interrupts = <RK_PB0 IRQ_TYPE_EDGE_FALLING>;
 		irq-gpios = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>;
+		// touchscreen-swapped-x-y;
+		touchscreen-size-x = <480>;
+		touchscreen-size-y = <800>;
 		status = "okay";
 	};
 };
