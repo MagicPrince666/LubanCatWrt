@@ -194,6 +194,95 @@
 		regulator-max-microvolt = <1050000>;
 		vin-supply = <&vcc5v0_sys>;
 	};
+
+	display_subsystem: display-subsystem {
+		compatible = "rockchip,display-subsystem";
+		ports = <&vop_out>;
+		logo-memory-region = <&drm_logo>;
+		status = "disabled";
+
+		devfreq = <&dmc>;
+		route {
+			route_rgb: route-rgb {
+				status = "disabled";
+				logo,uboot = "logo.bmp";
+				/* logo,kernel = "logo_kernel.bmp"; */
+				logo,mode = "center";
+				charge_logo,mode = "center";
+				connect = <&vop_out_rgb>;
+			};
+		};
+	};
+
+	panel: panel {
+		compatible = "auo,b101ean01";
+		status = "disabled";
+		/* enable-gpios = <&gpio7 21 GPIO_ACTIVE_HIGH>; */
+		bus-format = <0x100a>;
+
+		ports {
+			panel_in_rgb: endpoint {
+				remote-endpoint = <&rgb_out_panel>;
+			};
+		};
+	};
+
+	rgb: rgb {
+		compatible = "rockchip,rk3288-lvds";
+		status = "disabled";
+		pinctrl-names = "default";
+		pinctrl-0 = <&lcdc_ctl>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				rgb_in_vop: endpoint@0 {
+					reg = <0>;
+					remote-endpoint = <&vop_out_rgb>;
+				};
+			};
+
+			rgb_out: port@1 {
+				reg = <1>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				rgb_out_panel: endpoint {
+					remote-endpoint = <&panel_in_rgb>;
+				};
+			};
+
+		};
+	};
+
+	vop: vop@ff2e0000 {
+		compatible = "rockchip,rk3308-vop";
+		reg = <0x0 0xff2e0000 0x0 0x1fc>, <0x0 0xff2e0a00 0x0 0x400>;
+		reg-names = "regs", "gamma_lut";
+		interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&cru ACLK_VOP>, <&cru DCLK_VOP>,
+			 <&cru HCLK_VOP>;
+		clock-names = "aclk_vop", "dclk_vop", "hclk_vop";
+		rockchip,grf = <&grf>;
+		status = "disabled";
+
+		vop_out: port {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			vop_out_rgb: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&rgb_in_vop>;
+			};
+		};
+	};
 };
 
 &cpu0 {
@@ -208,6 +297,105 @@
 	mmc-hs200-1_8v;
 	non-removable;
 	vmmc-supply = <&vcc_io>;
+	status = "okay";
+};
+
+&display_subsystem {
+	status = "okay";
+};
+
+&panel {
+	compatible = "simple-panel";
+	/* compatible = "auo,b101ean01"; *//* 1280 x 800 */
+	/* compatible = "avic,tm070ddh03"; *//* 1024 x 600 */
+	/* compatible = "innolux,zj070na-01p"; *//* 1024 x 600 */
+	/* MEDIA_BUS_FMT_RGB888_1X24 MEDIA_BUS_FMT_RGB666_1X18 MEDIA_BUS_FMT_RGB565_1X16 MEDIA_BUS_FMT_RGB666_1X24_CPADHI */
+	bus-format = <MEDIA_BUS_FMT_RGB666_1X18>;
+	backlight = <&backlight>;
+	status = "okay";
+
+	reset-delay-ms = <120>;
+	init-delay-ms = <120>;
+	enable-delay-ms = <120>;
+	prepare-delay-ms = <120>;
+	disable-delay-ms = <120>;
+	unprepare-delay-ms = <120>;
+
+	display-timings {
+		native-mode = <&mdk3308_lcd1024_timing>;
+
+		mdk3308_lcd1024_timing: timing0 {
+			clock-frequency = <36600000>;
+			hactive = <1024>;
+			vactive = <600>;
+			hback-porch = <140>;
+			hfront-porch = <160>;
+			vback-porch = <20>;
+			vfront-porch = <12>;
+			hsync-len = <20>;
+			vsync-len = <3>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <0>;
+			pixelclk-active = <1>;
+		};
+
+		mdk3308_lcd800_timing: timing1 {
+			clock-frequency = <33000000>;
+			hactive = <800>;
+			vactive = <480>;
+			hback-porch = <40>;
+			hfront-porch = <40>;
+			vback-porch = <29>;
+			vfront-porch = <13>;
+			hsync-len = <48>;
+			vsync-len = <3>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <0>;
+			pixelclk-active = <1>;
+		};
+
+		mdk3308_lcd480_timing: timing2 {
+			clock-frequency = <9000000>;
+			hactive = <480>;
+			vactive = <272>;
+			hback-porch = <2>;
+			hfront-porch = <2>;
+			vback-porch = <2>;
+			vfront-porch = <2>;
+			hsync-len = <41>;
+			vsync-len = <10>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <0>;
+			pixelclk-active = <1>;
+		};
+
+		mdk3308_lcd320480_timing: timing3 {
+			clock-frequency = <11000000>;
+			hactive = <320>;
+			vactive = <480>;
+			hback-porch = <10>;
+			hfront-porch = <4>;
+			vback-porch = <10>;
+			vfront-porch = <4>;
+			hsync-len = <20>;
+			vsync-len = <20>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <0>;
+			pixelclk-active = <0>;
+		};
+	};
+};
+
+&rgb {
+	/delete-property/ pinctrl-0;
+	status = "okay";
+};
+
+&vop {
 	status = "okay";
 };
 
@@ -385,6 +573,86 @@
 				<1 RK_PC0 1 &pcfg_pull_up>, // LCDC_D12 B4
 				<1 RK_PB7 1 &pcfg_pull_up>; // LCDC_D11 B3
 		};
+
+		lcdc_ctl: lcdc-ctl {
+				rockchip,pins =
+					/* dclk */
+					<1 RK_PA0 RK_FUNC_1 &pcfg_pull_none>,
+					/* hsync */
+					<1 RK_PA1 RK_FUNC_1 &pcfg_pull_none>,
+					/* vsync */
+					<1 RK_PA2 RK_FUNC_1 &pcfg_pull_none>,
+					/* den */
+					<1 RK_PA3 RK_FUNC_1 &pcfg_pull_none>,
+					/* d0 */
+					<1 RK_PA4 RK_FUNC_1 &pcfg_pull_none>,
+					/* d1 */
+					<1 RK_PA5 RK_FUNC_1 &pcfg_pull_none>,
+					/* d2 */
+					<1 RK_PA6 RK_FUNC_1 &pcfg_pull_none>,
+					/* d3 */
+					<1 RK_PA7 RK_FUNC_1 &pcfg_pull_none>,
+					/* d4 */
+					<1 RK_PB0 RK_FUNC_1 &pcfg_pull_none>,
+					/* d5 */
+					<1 RK_PB1 RK_FUNC_1 &pcfg_pull_none>,
+					/* d6 */
+					<1 RK_PB2 RK_FUNC_1 &pcfg_pull_none>,
+					/* d7 */
+					<1 RK_PB3 RK_FUNC_1 &pcfg_pull_none>,
+					/* d8 */
+					<1 RK_PB4 RK_FUNC_1 &pcfg_pull_none>,
+					/* d9 */
+					<1 RK_PB5 RK_FUNC_1 &pcfg_pull_none>,
+					/* d10 */
+					<1 RK_PB6 RK_FUNC_1 &pcfg_pull_none>,
+					/* d11 */
+					<1 RK_PB7 RK_FUNC_1 &pcfg_pull_none>,
+					/* d12 */
+					<1 RK_PC0 RK_FUNC_1 &pcfg_pull_none>,
+					/* d13 */
+					<1 RK_PC1 RK_FUNC_1 &pcfg_pull_none>,
+					/* d14 */
+					<1 RK_PC2 RK_FUNC_1 &pcfg_pull_none>,
+					/* d15 */
+					<1 RK_PC3 RK_FUNC_1 &pcfg_pull_none>,
+					/* d16 */
+					<1 RK_PC4 RK_FUNC_1 &pcfg_pull_none>,
+					/* d17 */
+					<1 RK_PC5 RK_FUNC_1 &pcfg_pull_none>;
+			};
+
+			lcdc_rgb888_m0: lcdc-rgb888-m0 {
+				rockchip,pins =
+					/* d18 */
+					<1 RK_PC6 RK_FUNC_6 &pcfg_pull_none>,
+					/* d19 */
+					<1 RK_PC7 RK_FUNC_6 &pcfg_pull_none>,
+					/* d20 */
+					<2 RK_PB1 RK_FUNC_3 &pcfg_pull_none>,
+					/* d21 */
+					<2 RK_PB2 RK_FUNC_3 &pcfg_pull_none>,
+					/* d22 */
+					<2 RK_PB7 RK_FUNC_3 &pcfg_pull_none>,
+					/* d23 */
+					<2 RK_PC0 RK_FUNC_3 &pcfg_pull_none>;
+			};
+
+			lcdc_rgb888_m1: lcdc-rgb888-m1 {
+				rockchip,pins =
+					/* d18 */
+					<3 RK_PA6 RK_FUNC_3 &pcfg_pull_none>,
+					/* d19 */
+					<3 RK_PA7 RK_FUNC_3 &pcfg_pull_none>,
+					/* d20 */
+					<3 RK_PB0 RK_FUNC_3 &pcfg_pull_none>,
+					/* d21 */
+					<3 RK_PB1 RK_FUNC_3 &pcfg_pull_none>,
+					/* d22 */
+					<3 RK_PB2 RK_FUNC_4 &pcfg_pull_none>,
+					/* d23 */
+					<3 RK_PB3 RK_FUNC_4 &pcfg_pull_none>;
+			};
 	};
 
 	rgb_tft {
