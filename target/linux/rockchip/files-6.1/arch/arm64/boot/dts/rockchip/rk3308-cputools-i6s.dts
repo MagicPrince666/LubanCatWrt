@@ -89,8 +89,7 @@
 		compatible = "mmc-pwrseq-simple";
 		pinctrl-0 = <&wifi_enable_h>;
 		pinctrl-names = "default";
-		reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>,
-			<&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>;
 	};
 
 	tft_show: tft-show {
@@ -108,13 +107,13 @@
 		st7701s@0 {
 			compatible = "sitronix,st7701s";
 			reg = <0>;
-			spi-max-frequency =<1000000>;        
-			rotate = <0>;                    
+			spi-max-frequency =<1000000>;
+			rotate = <0>;
 			spi-cpol;
 			spi-cpha;
-			rgb;                           
-			fps = <10>;                      
-			buswidth = <9>;                   
+			rgb;
+			fps = <10>;
+			buswidth = <9>;
 			reset-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>;
 			dc-gpios = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
 			debug = <0>;
@@ -304,8 +303,7 @@
 	sdio-pwrseq {
 		wifi_enable_h: wifi-enable-h {
 			rockchip,pins = 
-				<4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>,
-				<0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+				<4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -349,33 +347,6 @@
 		pwm1_pin: pwm1-pin {
 			rockchip,pins =
 				<0 RK_PB6 1 &pcfg_pull_none>;
-		};
-	};
-
-	spi1 {
-		spi1_csn0: spi1-csn0 {
-			rockchip,pins =
-				<3 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		spi1_csn1: spi1-csn1 {
-			rockchip,pins =
-				<2 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		spi1_clk: spi1-clk {
-			rockchip,pins =
-				<3 RK_PB3 3 &pcfg_pull_up_4ma>;
-		};
-
-		spi1_miso: spi1-miso {
-			rockchip,pins =
-				<3 RK_PB2 3 &pcfg_pull_up_4ma>;
-		};
-
-		spi1_mosi: spi1-mosi {
-			rockchip,pins =
-				<3 RK_PB4 3 &pcfg_pull_up_4ma>;
 		};
 	};
 
@@ -451,7 +422,7 @@
 	pinctrl-0 = <&pwm0_pin_pull_down>;
 };
 
-&pwm1 { // 背光
+&pwm1 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&pwm1_pin>;
@@ -466,7 +437,7 @@
 	#address-cells = <1>;
 	#size-cells = <0>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&sdio_bus4 &sdio_cmd &sdio_clk>;
+	pinctrl-0 = <&sdio_bus4 &sdio_cmd &sdio_clk &sdio_intn>;
 	cap-sd-highspeed;
 	cap-sdio-irq;
 	keep-power-in-suspend;
@@ -527,37 +498,13 @@
 	status = "okay";
 
 	bluetooth {
-		compatible = "realtek,rtl8723bs-bt";
+		compatible = "realtek,rtl8822cs-bt";
 		pinctrl-names = "default";
 		pinctrl-0 = <&bluetooth_pins>;
 		enable-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
 		device-wake-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_HIGH>;
 		host-wake-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_HIGH>;
 		max-speed = <1500000>;
-	};
-};
-
-&spi1 {
-	#address-cells = <1>;
-	#size-cells = <0>;
-    pinctrl-names = "default";
-    pinctrl-0 = <&spi1_csn0 &spi1_csn1 &spi1_clk &spi1_miso &spi1_mosi>;
-	spi-num-chipselects = <2>;
-	cs-gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_HIGH>, <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
-    status = "okay";
-
-	spidev@0 {
-		compatible = "rohm,dh2228fv";
-		spi-max-frequency = <30000000>;
-		reg = <0>;
-		status = "okay";
-	};
-
-	spidev@1 {
-		compatible = "rohm,dh2228fv";
-		spi-max-frequency = <30000000>;
-		reg = <1>;
-		status = "okay";
 	};
 };
 

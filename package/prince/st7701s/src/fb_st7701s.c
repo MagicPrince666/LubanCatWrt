@@ -71,8 +71,9 @@ static int init_tearing_effect_line(struct fbtft_par *par)
 	/* GPIO is locked as an IRQ, we may drop the reference */
 	gpiod_put(te);
 
-	if (irq < 0)
+	if (irq < 0) {
 		return irq;
+	}
 
 	irq_te = irq;
 	init_completion(&panel_te);
@@ -80,8 +81,9 @@ static int init_tearing_effect_line(struct fbtft_par *par)
 	/* The effective state is high and lasts no more than 1000 microseconds */
 	rc = devm_request_irq(dev, irq_te, panel_te_handler,
 			      IRQF_TRIGGER_RISING, "TE_GPIO", par);
-	if (rc)
+	if (rc) {
 		return dev_err_probe(dev, rc, "TE IRQ request failed.\n");
+	}
 
 	disable_irq_nosync(irq_te);
 
@@ -95,8 +97,9 @@ static int init_display(struct fbtft_par *par)
 	par->fbtftops.reset(par);
 
 	rc = init_tearing_effect_line(par);
-	if (rc)
+	if (rc) {
 		return rc;
+	}
 
 	/* turn off sleep mode */
 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
@@ -211,8 +214,9 @@ static int set_gamma(struct fbtft_par *par, u32 *curves)
 
 	for (i = 0; i < par->gamma.num_curves; i++) {
 		c = i * par->gamma.num_values;
-		for (j = 0; j < par->gamma.num_values; j++)
+		for (j = 0; j < par->gamma.num_values; j++) {
 			curves[c + j] &= gamma_par_mask[j];
+		}
 		write_reg(
 			par, PVGAMCTRL + i,
 			curves[c + 0], curves[c + 1], curves[c + 2],
@@ -234,10 +238,11 @@ static int set_gamma(struct fbtft_par *par, u32 *curves)
  */
 static int blank(struct fbtft_par *par, bool on)
 {
-	if (on)
+	if (on) {
 		write_reg(par, MIPI_DCS_SET_DISPLAY_OFF);
-	else
+	} else {
 		write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
+	}
 	return 0;
 }
 
@@ -259,8 +264,9 @@ static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
 		reinit_completion(&panel_te);
 		ret = wait_for_completion_timeout(&panel_te,
 						  msecs_to_jiffies(PANEL_TE_TIMEOUT_MS));
-		if (ret == 0)
+		if (ret == 0){
 			dev_err(dev, "wait panel TE timeout\n");
+		}
 
 		disable_irq(irq_te);
 	}
