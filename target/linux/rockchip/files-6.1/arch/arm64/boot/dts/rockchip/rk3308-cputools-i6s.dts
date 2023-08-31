@@ -455,8 +455,6 @@
 		irq-gpios = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>;
 		// touchscreen-swapped-x-y;
-		touchscreen-size-x = <480>;
-		touchscreen-size-y = <800>;
 		status = "okay";
 	};
 };
@@ -753,11 +751,6 @@
 	non-removable;
 	sd-uhs-sdr104;
 	status = "okay";
-	rtl8821@0 {
-		compatible = "realtek,rtl8821cs";
-		reg = <0>;
-		bus-width = <4>;
-	};
 };
 
 &sdmmc {

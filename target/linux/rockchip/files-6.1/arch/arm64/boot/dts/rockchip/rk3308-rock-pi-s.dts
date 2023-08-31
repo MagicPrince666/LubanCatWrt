@@ -205,7 +205,7 @@
 	mpu6050@68 {
 		compatible = "invensense,mpu6050";
 		reg = <0x68>;
-		status = "okay";
+		status = "disabled";
 		interrupt-parent = <&gpio2>;
 		interrupts = <RK_PB0 IRQ_TYPE_EDGE_RISING>; //GPIO2_B0
 		mount-matrix = "-0.984807753012208",  /* x0 */
@@ -237,9 +237,9 @@
 	buttons {
 		gpio_buttons_pin: gpio-buttons {
 			rockchip,pins =
-				<2 RK_PA6 0 &pcfg_pull_up>,
-				<2 RK_PA7 0 &pcfg_pull_up>,
-				<2 RK_PB1 0 &pcfg_pull_up>;
+				<2 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>,
+				<2 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up>,
+				<2 RK_PB1 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 
@@ -522,18 +522,6 @@
 		ti,pressure-max = /bits/ 16 <255>;
 		wakeup-source;
 		status = "okay";
-	};
-
-	rc522@3{
-		compatible = "nxp,rc522";
-		spi-max-frequency = <8000000>;
-		reg = <3>;
-		rst-gpio = <&gpio2 RK_PC0 GPIO_ACTIVE_HIGH>;
- 		pinctrl-names = "default";
-		pinctrl-0 = <&rc522_rst>;
-		//spi-cpha;
-		//spi-cpol;
-		status = "disabled";
 	};
 };
 
