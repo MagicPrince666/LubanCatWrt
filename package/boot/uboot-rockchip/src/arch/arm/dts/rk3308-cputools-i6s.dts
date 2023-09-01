@@ -124,7 +124,7 @@
 };
 
 &emmc {
-	bus-width = <4>;
+	bus-width = <8>;
 	cap-mmc-highspeed;
 	supports-emmc;
 	disable-wp;
@@ -172,8 +172,8 @@
 
 &sdmmc {
 	pinctrl-names = "default";
-	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_det &sdmmc_gpio>;
-	bus-width = <8>;
+	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_det &sdmmc_pwren &sdmmc_bus4>;
+	bus-width = <4>;
 	cap-mmc-highspeed;
 	cap-sd-highspeed;
 	supports-sd;
