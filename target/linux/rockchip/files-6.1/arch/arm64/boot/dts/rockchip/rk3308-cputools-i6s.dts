@@ -28,11 +28,11 @@
 	leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
-		pinctrl-0 = <&green_led_gio>, <&heartbeat_led_gpio>;
+		pinctrl-0 = <&heartbeat_led_gpio>;
 
 		green-led {
 			default-state = "on";
-			gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
 			label = "rockpis:green:power";
 			linux,default-trigger = "timer";
 		};
@@ -196,7 +196,7 @@
 	};
 
 	dmc: dmc {
-		compatible = "rockchip,rk3308-dmc";
+		compatible = "rockchip,rk3328-dmc";
 		clocks = <&cru SCLK_DDRCLK>;
 		clock-names = "dmc_clk";
 		operating-points-v2 = <&dmc_opp_table>;
@@ -227,16 +227,6 @@
 		status = "disabled";
 
 		devfreq = <&dmc>;
-		route {
-			route_rgb: route-rgb {
-				status = "disabled";
-				logo,uboot = "logo.bmp";
-				/* logo,kernel = "logo_kernel.bmp"; */
-				logo,mode = "center";
-				charge_logo,mode = "center";
-				connect = <&vop_out_rgb>;
-			};
-		};
 	};
 
 	panel: panel {
@@ -244,47 +234,6 @@
 		status = "disabled";
 		/* enable-gpios = <&gpio7 21 GPIO_ACTIVE_HIGH>; */
 		bus-format = <0x100a>;
-
-		ports {
-			panel_in_rgb: endpoint {
-				remote-endpoint = <&rgb_out_panel>;
-			};
-		};
-	};
-
-	rgb: rgb {
-		compatible = "rockchip,rk3288-lvds";
-		status = "disabled";
-		pinctrl-names = "default";
-		pinctrl-0 = <&lcdc_ctl>;
-
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			port@0 {
-				reg = <0>;
-
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				rgb_in_vop: endpoint@0 {
-					reg = <0>;
-					remote-endpoint = <&vop_out_rgb>;
-				};
-			};
-
-			rgb_out: port@1 {
-				reg = <1>;
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				rgb_out_panel: endpoint {
-					remote-endpoint = <&panel_in_rgb>;
-				};
-			};
-
-		};
 	};
 
 	reserved-memory {
@@ -299,7 +248,7 @@
 	};
 
 	vop: vop@ff2e0000 {
-		compatible = "rockchip,rk3308-vop";
+		compatible = "rockchip,rk3328-vop";
 		reg = <0x0 0xff2e0000 0x0 0x1fc>, <0x0 0xff2e0a00 0x0 0x400>;
 		reg-names = "regs", "gamma_lut";
 		interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
@@ -312,11 +261,6 @@
 		vop_out: port {
 			#address-cells = <1>;
 			#size-cells = <0>;
-
-			vop_out_rgb: endpoint@0 {
-				reg = <0>;
-				remote-endpoint = <&rgb_in_vop>;
-			};
 		};
 	};
 };
@@ -426,11 +370,6 @@
 	};
 };
 
-&rgb {
-	/delete-property/ pinctrl-0;
-	status = "okay";
-};
-
 &vop {
 	status = "okay";
 };
@@ -510,10 +449,6 @@
 	};
 
 	leds {
-		green_led_gio: green-led-gpio {
-			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
 		heartbeat_led_gpio: heartbeat-led-gpio {
 			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
@@ -744,6 +679,7 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&sdio_bus4 &sdio_cmd &sdio_clk &sdio_intn>;
 	cap-sd-highspeed;
+	supports-sdio;
 	cap-sdio-irq;
 	keep-power-in-suspend;
 	max-frequency = <1000000>;
