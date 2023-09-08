@@ -116,3 +116,13 @@ define Device/i2c_cputools-i6s
 		kmod-input-joydev kmod-usb-hid-dragonrise
 endef
 TARGET_DEVICES += i2c_cputools-i6s
+
+define Device/i2c_cputools-i6p
+  DEVICE_VENDOR := I2C
+  DEVICE_MODEL := CPUTOOLS I6P
+  SOC := rk3566
+  UBOOT_DEVICE_NAME := cputools-i6p-rk3566
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script rk356x | pine64-img | gzip | append-metadata
+  DEVICE_PACKAGES := kmod-r8169
+endef
+TARGET_DEVICES += i2c_cputools-i6p

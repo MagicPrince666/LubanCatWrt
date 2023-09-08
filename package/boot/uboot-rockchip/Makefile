@@ -128,6 +128,17 @@ define U-Boot/lubancat1-rk3566
   DDR:=rk3566_ddr_1056MHz_v1.13.bin
 endef
 
+define U-Boot/cputools-i6p-rk3566
+	BUILD_SUBTARGET:=armv8
+	NAME:=CPUTOOLS I6P
+	BUILD_DEVICES:= \
+			i2c_cputools-i6p
+	DEPENDS:=+PACKAGE_u-boot-cputools-i6p-rk3566:arm-trusted-firmware-rk3566
+	PKG_BUILD_DEPENDS:=arm-trusted-firmware-rockchip-vendor
+	ATF:=rk3568_bl31_v1.28.elf
+	DDR:=rk3566_ddr_1056MHz_v1.13.bin
+endef
+
 define U-Boot/lubancat1n-rk3566
   BUILD_SUBTARGET:=armv8
   NAME:=LubanCat1N
@@ -199,6 +210,7 @@ UBOOT_TARGETS := \
   lubancat-zero-w-rk3566 \
   rock-pi-s-rk3308 \
   cputools-i6s-rk3308 \
+  cputools-i6p-rk3566 \
   lubancat1-rk3566 \
   lubancat1n-rk3566 \
   lubancat2-rk3568 \

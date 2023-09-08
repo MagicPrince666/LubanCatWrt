@@ -1,0 +1,12 @@
+Index: linux-6.1.41/arch/arm64/boot/dts/rockchip/Makefile
+===================================================================
+--- linux-6.1.41.orig/arch/arm64/boot/dts/rockchip/Makefile
++++ linux-6.1.41/arch/arm64/boot/dts/rockchip/Makefile
+@@ -75,6 +75,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-so
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-lubancat-zero-n.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-lubancat-zero-w.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-lubancat1.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cputools-i6p.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-lubancat1n.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-lubancat2.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-lubancat2n.dtb
